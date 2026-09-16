@@ -1,5 +1,6 @@
 package app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -17,11 +18,15 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
     private String role = "STUDENT";
+
+    @Column(nullable = false)
+    private String accountStatus = "ACTIVE";
 
     private LocalDateTime createdAt;
 
@@ -30,10 +35,15 @@ public class User {
 
     @PrePersist
     protected void onCreate() {
+
         createdAt = LocalDateTime.now();
 
-        if (role == null || role.trim().isEmpty()) {
+        if (role == null) {
             role = "STUDENT";
+        }
+
+        if (accountStatus == null) {
+            accountStatus = "ACTIVE";
         }
     }
 
@@ -71,6 +81,14 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(String accountStatus) {
+        this.accountStatus = accountStatus;
     }
 
     public LocalDateTime getCreatedAt() {

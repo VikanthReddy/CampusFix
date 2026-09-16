@@ -84,3 +84,10 @@ desktop.ini
 # Uploads / generated files
 # =========================
 uploads/
+# Local application configuration
+application.properties
+
+# Environment files
+.env
+.env.*
+!.env.example

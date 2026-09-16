@@ -11,10 +11,21 @@ public class AnalyticsResponse {
     private long plumbingComplaints;
     private long networkComplaints;
     private long furnitureComplaints;
+    private long civilComplaints;
     private long generalComplaints;
+
+
+    // ==========================================
+    // DEFAULT CONSTRUCTOR
+    // ==========================================
 
     public AnalyticsResponse() {
     }
+
+
+    // ==========================================
+    // CONSTRUCTOR
+    // ==========================================
 
     public AnalyticsResponse(
             long totalComplaints,
@@ -25,18 +36,26 @@ public class AnalyticsResponse {
             long plumbingComplaints,
             long networkComplaints,
             long furnitureComplaints,
+            long civilComplaints,
             long generalComplaints) {
 
         this.totalComplaints = totalComplaints;
         this.pendingComplaints = pendingComplaints;
         this.inProgressComplaints = inProgressComplaints;
         this.resolvedComplaints = resolvedComplaints;
+
         this.electricalComplaints = electricalComplaints;
         this.plumbingComplaints = plumbingComplaints;
         this.networkComplaints = networkComplaints;
         this.furnitureComplaints = furnitureComplaints;
+        this.civilComplaints = civilComplaints;
         this.generalComplaints = generalComplaints;
     }
+
+
+    // ==========================================
+    // GETTERS
+    // ==========================================
 
     public long getTotalComplaints() {
         return totalComplaints;
@@ -68,6 +87,10 @@ public class AnalyticsResponse {
 
     public long getFurnitureComplaints() {
         return furnitureComplaints;
+    }
+
+    public long getCivilComplaints() {
+        return civilComplaints;
     }
 
     public long getGeneralComplaints() {

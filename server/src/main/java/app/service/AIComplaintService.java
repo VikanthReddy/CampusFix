@@ -5,103 +5,212 @@ import org.springframework.stereotype.Service;
 @Service
 public class AIComplaintService {
 
+    // =====================================================
+    // COMPLAINT CATEGORY
+    // =====================================================
+
     public String categorizeComplaint(
             String title,
             String description) {
 
         String text =
-                (title + " " + description).toLowerCase();
+                ((title == null ? "" : title) + " "
+                        + (description == null ? "" : description))
+                        .toLowerCase();
 
-        if (containsAny(text,
-                "wifi",
-                "internet",
-                "network",
-                "router",
-                "lan",
-                "computer")) {
+        // -------------------------------------------------
+        // ELECTRICAL
+        // -------------------------------------------------
 
-            return "NETWORK";
-        }
-
-        if (containsAny(text,
-                "water",
-                "tap",
-                "pipe",
-                "leak",
-                "toilet",
-                "washroom")) {
-
-            return "PLUMBING";
-        }
-
-        if (containsAny(text,
-                "fan",
-                "light",
+        if (containsAny(
+                text,
                 "electric",
                 "electricity",
-                "switch",
+                "current",
                 "power",
-                "ac")) {
-
+                "switch",
+                "socket",
+                "plug",
+                "wire",
+                "wiring",
+                "fan",
+                "light",
+                "bulb",
+                "tube light",
+                "ac",
+                "air conditioner"
+        )) {
             return "ELECTRICAL";
         }
 
-        if (containsAny(text,
+        // -------------------------------------------------
+        // PLUMBING
+        // -------------------------------------------------
+
+        if (containsAny(
+                text,
+                "water",
+                "tap",
+                "pipe",
+                "plumbing",
+                "leak",
+                "leakage",
+                "washroom",
+                "toilet",
+                "sink",
+                "drain",
+                "flush"
+        )) {
+            return "PLUMBING";
+        }
+
+        // -------------------------------------------------
+        // NETWORK
+        // -------------------------------------------------
+
+        if (containsAny(
+                text,
+                "wifi",
+                "wi-fi",
+                "internet",
+                "network",
+                "router",
+                "ethernet",
+                "lan",
+                "connection",
+                "connectivity"
+        )) {
+            return "NETWORK";
+        }
+
+        // -------------------------------------------------
+        // FURNITURE
+        // -------------------------------------------------
+
+        if (containsAny(
+                text,
                 "chair",
-                "bench",
                 "desk",
                 "table",
+                "bench",
+                "furniture",
                 "door",
                 "window",
-                "furniture")) {
-
+                "cupboard",
+                "drawer",
+                "broken seat"
+        )) {
             return "FURNITURE";
+        }
+
+        // -------------------------------------------------
+        // CIVIL
+        // -------------------------------------------------
+
+        if (containsAny(
+                text,
+                "wall",
+                "floor",
+                "ceiling",
+                "roof",
+                "building",
+                "crack",
+                "paint",
+                "construction",
+                "road",
+                "pothole",
+                "civil"
+        )) {
+            return "CIVIL";
+        }
+
+        // -------------------------------------------------
+        // GENERAL MAINTENANCE
+        // -------------------------------------------------
+
+        if (containsAny(
+                text,
+                "cleaning",
+                "clean",
+                "garbage",
+                "dust",
+                "maintenance",
+                "repair",
+                "campus",
+                "classroom",
+                "laboratory",
+                "lab"
+        )) {
+            return "GENERAL MAINTENANCE";
         }
 
         return "GENERAL";
     }
+
+    // =====================================================
+    // COMPLAINT PRIORITY
+    // =====================================================
 
     public String determinePriority(
             String title,
             String description) {
 
         String text =
-                (title + " " + description).toLowerCase();
+                ((title == null ? "" : title) + " "
+                        + (description == null ? "" : description))
+                        .toLowerCase();
 
-        if (containsAny(text,
+        // -------------------------------------------------
+        // HIGH PRIORITY
+        // -------------------------------------------------
+
+        if (containsAny(
+                text,
                 "fire",
-                "danger",
-                "emergency",
-                "accident",
-                "flood",
+                "smoke",
+                "shock",
                 "electric shock",
-                "gas leak")) {
-
-            return "CRITICAL";
-        }
-
-        if (containsAny(text,
-                "not working",
-                "broken",
-                "leak",
-                "urgent",
-                "unsafe",
-                "no internet",
-                "power failure")) {
-
+                "danger",
+                "dangerous",
+                "emergency",
+                "short circuit",
+                "sparking",
+                "spark",
+                "flood",
+                "major leakage",
+                "security"
+        )) {
             return "HIGH";
         }
 
-        if (containsAny(text,
-                "slow",
-                "minor",
-                "damaged")) {
+        // -------------------------------------------------
+        // MEDIUM PRIORITY
+        // -------------------------------------------------
 
-            return "LOW";
+        if (containsAny(
+                text,
+                "not working",
+                "broken",
+                "damaged",
+                "leak",
+                "slow",
+                "problem",
+                "issue",
+                "repair"
+        )) {
+            return "MEDIUM";
         }
 
-        return "MEDIUM";
+        // -------------------------------------------------
+        // LOW PRIORITY
+        // -------------------------------------------------
+
+        return "LOW";
     }
+
+    // =====================================================
+    // KEYWORD MATCHING
+    // =====================================================
 
     private boolean containsAny(
             String text,
@@ -109,7 +218,9 @@ public class AIComplaintService {
 
         for (String keyword : keywords) {
 
-            if (text.contains(keyword)) {
+            if (text.contains(
+                    keyword.toLowerCase()
+            )) {
                 return true;
             }
         }

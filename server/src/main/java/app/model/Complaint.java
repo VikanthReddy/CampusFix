@@ -25,6 +25,9 @@ public class Complaint {
 
     private String status;
 
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
@@ -114,6 +117,14 @@ public class Complaint {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public LocalDateTime getCreatedAt() {

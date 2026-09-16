@@ -2,78 +2,678 @@ package app.service;
 
 import app.dto.LoginRequest;
 import app.dto.SignupRequest;
+import app.model.RoleRequest;
+import app.model.Technician;
 import app.model.User;
+import app.repository.RoleRequestRepository;
+import app.repository.TechnicianRepository;
 import app.repository.UserRepository;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final RoleRequestRepository roleRequestRepository;
+    private final TechnicianRepository technicianRepository;
     private final PasswordHash passwordHash;
 
     public AuthService(
             UserRepository userRepository,
+            RoleRequestRepository roleRequestRepository,
+            TechnicianRepository technicianRepository,
             PasswordHash passwordHash) {
 
         this.userRepository = userRepository;
+        this.roleRequestRepository = roleRequestRepository;
+        this.technicianRepository = technicianRepository;
         this.passwordHash = passwordHash;
     }
 
-    // =========================
+    // ==========================================
     // SIGNUP
-    // =========================
-    public User signup(SignupRequest request) {
+    // ==========================================
 
-        // Check whether email already exists
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already registered");
+    public User signup(
+            SignupRequest request) {
+
+        if (request == null) {
+            throw new RuntimeException(
+                    "Signup details are required."
+            );
         }
 
-        User user = new User();
+        if (request.getName() == null ||
+                request.getName().trim().isEmpty()) {
 
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
+            throw new RuntimeException(
+                    "Name is required."
+            );
+        }
 
-        // Hash password
-        String hashedPassword =
-                passwordHash.manualHash(request.getPassword());
+        if (request.getEmail() == null ||
+                request.getEmail().trim().isEmpty()) {
 
-        user.setPassword(hashedPassword);
+            throw new RuntimeException(
+                    "Email is required."
+            );
+        }
 
-        // Role
-        String role = request.getRole();
+        if (request.getPassword() == null ||
+                request.getPassword().length() < 6) {
 
-        if (role == null || role.trim().isEmpty()) {
+            throw new RuntimeException(
+                    "Password must contain at least 6 characters."
+            );
+        }
+
+        String email =
+                request.getEmail()
+                        .trim()
+                        .toLowerCase();
+
+        String role =
+                request.getRole();
+
+        if (role == null ||
+                role.trim().isEmpty()) {
+
             role = "STUDENT";
         }
 
-        user.setRole(role.toUpperCase());
+        role =
+                role.trim()
+                        .toUpperCase();
 
-        return userRepository.save(user);
-    }
+        if (!role.equals("STUDENT") &&
+            !role.equals("ADMIN") &&
+            !role.equals("TECHNICIAN")) {
 
+            throw new RuntimeException(
+                    "Invalid role selected."
+            );
+        }
 
-    // =========================
-    // LOGIN
-    // =========================
-    public User login(LoginRequest request) {
+        // ======================================
+        // EXISTING USER
+        // ======================================
 
-        User user = userRepository
-                .findByEmail(request.getEmail())
-                .orElseThrow(
-                        () -> new RuntimeException("User not found")
+        if (userRepository.existsByEmail(email)) {
+
+            throw new RuntimeException(
+                    "Email already registered."
+            );
+        }
+
+        // ======================================
+        // STUDENT
+        // ======================================
+
+        if (role.equals("STUDENT")) {
+
+            User user = new User();
+
+            user.setName(
+                    request.getName().trim()
+            );
+
+            user.setEmail(email);
+
+            user.setPassword(
+                    passwordHash.encode(
+                            request.getPassword()
+                    )
+            );
+
+            user.setRole("STUDENT");
+            user.setAccountStatus("ACTIVE");
+
+            return userRepository.save(user);
+        }
+
+        // ======================================
+        // ADMIN
+        // ======================================
+
+        if (role.equals("ADMIN")) {
+
+            boolean adminExists =
+                    userRepository
+                            .existsByRoleAndAccountStatus(
+                                    "ADMIN",
+                                    "ACTIVE"
+                            );
+
+            // ----------------------------------
+            // FIRST ADMIN
+            // ----------------------------------
+
+            if (!adminExists) {
+
+                User user = new User();
+
+                user.setName(
+                        request.getName().trim()
                 );
 
-        // Hash entered password
-        String hashedPassword =
-                passwordHash.manualHash(request.getPassword());
+                user.setEmail(email);
 
-        // Compare hashed passwords
-        if (!user.getPassword().equals(hashedPassword)) {
-            throw new RuntimeException("Invalid password");
+                user.setPassword(
+                        passwordHash.encode(
+                                request.getPassword()
+                        )
+                );
+
+                user.setRole("ADMIN");
+                user.setAccountStatus("ACTIVE");
+
+                return userRepository.save(user);
+            }
+
+            // ----------------------------------
+            // ADDITIONAL ADMIN
+            // ----------------------------------
+
+            createRoleRequest(
+                    request,
+                    "ADMIN"
+            );
+
+            throw new RuntimeException(
+                    "Admin request submitted. Waiting for approval."
+            );
+        }
+
+        // ======================================
+        // TECHNICIAN
+        // ======================================
+
+        validateTechnicianSignup(request);
+
+        createRoleRequest(
+                request,
+                "TECHNICIAN"
+        );
+
+        throw new RuntimeException(
+                "Technician request submitted. Waiting for admin approval."
+        );
+    }
+
+    // ==========================================
+    // TECHNICIAN VALIDATION
+    // ==========================================
+
+    private void validateTechnicianSignup(
+            SignupRequest request) {
+
+        if (request.getDepartment() == null ||
+                request.getDepartment()
+                        .trim()
+                        .isEmpty()) {
+
+            throw new RuntimeException(
+                    "Department is required for technicians."
+            );
+        }
+
+        if (request.getPhone() == null ||
+                !request.getPhone()
+                        .matches("\\d{10}")) {
+
+            throw new RuntimeException(
+                    "Technician phone number must contain exactly 10 digits."
+            );
+        }
+
+        if (request.getSpecialization() == null ||
+                request.getSpecialization()
+                        .trim()
+                        .isEmpty()) {
+
+            throw new RuntimeException(
+                    "Technician specialization is required."
+            );
+        }
+
+        String specialization =
+                request.getSpecialization()
+                        .trim()
+                        .toUpperCase();
+
+        if (!isValidSpecialization(
+                specialization
+        )) {
+
+            throw new RuntimeException(
+                    "Invalid technician specialization."
+            );
+        }
+    }
+
+    // ==========================================
+    // VALID SPECIALIZATIONS
+    // ==========================================
+
+    private boolean isValidSpecialization(
+            String specialization) {
+
+        return specialization.equals("ELECTRICAL") ||
+               specialization.equals("PLUMBING") ||
+               specialization.equals("NETWORK") ||
+               specialization.equals("FURNITURE") ||
+               specialization.equals("CIVIL") ||
+               specialization.equals("GENERAL") ||
+               specialization.equals("GENERAL MAINTENANCE");
+    }
+
+    // ==========================================
+    // CREATE ROLE REQUEST
+    // ==========================================
+
+    private void createRoleRequest(
+            SignupRequest request,
+            String role) {
+
+        String email =
+                request.getEmail()
+                        .trim()
+                        .toLowerCase();
+
+        if (roleRequestRepository
+                .existsByEmailAndStatus(
+                        email,
+                        "PENDING"
+                )) {
+
+            throw new RuntimeException(
+                    "A request with this email is already pending."
+            );
+        }
+
+        RoleRequest roleRequest =
+                new RoleRequest();
+
+        roleRequest.setName(
+                request.getName().trim()
+        );
+
+        roleRequest.setEmail(
+                email
+        );
+
+        /*
+         * Store the password using BCrypt.
+         * It will be converted into a real User
+         * only after admin approval.
+         */
+        roleRequest.setPassword(
+                passwordHash.encode(
+                        request.getPassword()
+                )
+        );
+
+        roleRequest.setRequestedRole(
+                role
+        );
+
+        roleRequest.setDepartment(
+                request.getDepartment()
+        );
+
+        roleRequest.setPhone(
+                request.getPhone()
+        );
+
+        roleRequest.setSpecialization(
+                request.getSpecialization()
+        );
+
+        roleRequest.setStatus(
+                "PENDING"
+        );
+
+        roleRequestRepository.save(
+                roleRequest
+        );
+    }
+
+    // ==========================================
+    // LOGIN
+    // ==========================================
+
+    public User login(
+            LoginRequest request) {
+
+        if (request == null) {
+            throw new RuntimeException(
+                    "Login details are required."
+            );
+        }
+
+        if (request.getEmail() == null ||
+                request.getEmail()
+                        .trim()
+                        .isEmpty()) {
+
+            throw new RuntimeException(
+                    "Email is required."
+            );
+        }
+
+        if (request.getPassword() == null ||
+                request.getPassword().isEmpty()) {
+
+            throw new RuntimeException(
+                    "Password is required."
+            );
+        }
+
+        String email =
+                request.getEmail()
+                        .trim()
+                        .toLowerCase();
+
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Invalid email or password."
+                                )
+                        );
+
+        // ======================================
+        // ACCOUNT STATUS
+        // ======================================
+
+        if (!"ACTIVE".equalsIgnoreCase(
+                user.getAccountStatus()
+        )) {
+
+            throw new RuntimeException(
+                    "Your account is not active."
+            );
+        }
+
+        // ======================================
+        // PASSWORD CHECK
+        // ======================================
+
+        if (!passwordHash.matches(
+                request.getPassword(),
+                user.getPassword()
+        )) {
+
+            throw new RuntimeException(
+                    "Invalid email or password."
+            );
+        }
+
+        // ======================================
+        // UPGRADE OLD PASSWORD HASH
+        // ======================================
+
+        if (!passwordHash.isBCryptHash(
+                user.getPassword()
+        )) {
+
+            user.setPassword(
+                    passwordHash.encode(
+                            request.getPassword()
+                    )
+            );
+
+            user = userRepository.save(user);
         }
 
         return user;
+    }
+
+    // ==========================================
+    // GET ALL TECHNICIANS
+    // ==========================================
+
+    public List<Technician> getAllTechnicians() {
+
+        return technicianRepository.findAll();
+    }
+
+    // ==========================================
+    // GET PENDING ROLE REQUESTS
+    // ==========================================
+
+    public List<RoleRequest> getPendingRoleRequests() {
+
+        return roleRequestRepository
+                .findByStatus("PENDING");
+    }
+
+    // ==========================================
+    // APPROVE ROLE REQUEST
+    // ==========================================
+
+    @Transactional
+    public RoleRequest approveRoleRequest(
+            Long requestId,
+            String adminEmail) {
+
+        verifyActiveAdmin(adminEmail);
+
+        RoleRequest request =
+                roleRequestRepository
+                        .findById(requestId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Role request not found."
+                                )
+                        );
+
+        if (!"PENDING".equalsIgnoreCase(
+                request.getStatus()
+        )) {
+
+            throw new RuntimeException(
+                    "This request has already been processed."
+            );
+        }
+
+        String email =
+                request.getEmail()
+                        .trim()
+                        .toLowerCase();
+
+        if (userRepository.existsByEmail(email)) {
+
+            throw new RuntimeException(
+                    "A user with this email already exists."
+            );
+        }
+
+        // ======================================
+        // CREATE USER
+        // ======================================
+
+        User user = new User();
+
+        user.setName(
+                request.getName()
+        );
+
+        user.setEmail(
+                email
+        );
+
+        user.setPassword(
+                request.getPassword()
+        );
+
+        user.setRole(
+                request.getRequestedRole()
+                        .toUpperCase()
+        );
+
+        user.setAccountStatus(
+                "ACTIVE"
+        );
+
+        User savedUser =
+                userRepository.save(user);
+
+        // ======================================
+        // CREATE TECHNICIAN PROFILE
+        // ======================================
+
+        if ("TECHNICIAN".equalsIgnoreCase(
+                request.getRequestedRole()
+        )) {
+
+            if (technicianRepository
+                    .existsByEmail(email)) {
+
+                throw new RuntimeException(
+                        "Technician profile already exists."
+                );
+            }
+
+            Technician technician =
+                    new Technician();
+
+            technician.setName(
+                    request.getName()
+            );
+
+            technician.setEmail(
+                    email
+            );
+
+            technician.setPhone(
+                    request.getPhone()
+            );
+
+            technician.setDepartment(
+                    request.getDepartment()
+            );
+
+            technician.setSpecialization(
+                    request.getSpecialization()
+                            .trim()
+                            .toUpperCase()
+            );
+
+            technician.setAvailable(true);
+
+            technicianRepository.save(
+                    technician
+            );
+        }
+
+        // ======================================
+        // UPDATE REQUEST
+        // ======================================
+
+        request.setStatus("APPROVED");
+
+        request.setApprovedBy(
+                savedUser.getId()
+        );
+
+        return roleRequestRepository.save(
+                request
+        );
+    }
+
+    // ==========================================
+    // REJECT ROLE REQUEST
+    // ==========================================
+
+    @Transactional
+    public RoleRequest rejectRoleRequest(
+            Long requestId,
+            String adminEmail) {
+
+        User admin =
+                verifyActiveAdmin(adminEmail);
+
+        RoleRequest request =
+                roleRequestRepository
+                        .findById(requestId)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Role request not found."
+                                )
+                        );
+
+        if (!"PENDING".equalsIgnoreCase(
+                request.getStatus()
+        )) {
+
+            throw new RuntimeException(
+                    "This request has already been processed."
+            );
+        }
+
+        request.setStatus("REJECTED");
+
+        request.setApprovedBy(
+                admin.getId()
+        );
+
+        return roleRequestRepository.save(
+                request
+        );
+    }
+
+    // ==========================================
+    // VERIFY ACTIVE ADMIN
+    // ==========================================
+
+    private User verifyActiveAdmin(
+            String adminEmail) {
+
+        if (adminEmail == null ||
+                adminEmail.trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "Admin authentication is required."
+            );
+        }
+
+        User admin =
+                userRepository
+                        .findByEmail(
+                                adminEmail
+                                        .trim()
+                                        .toLowerCase()
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Admin account not found."
+                                )
+                        );
+
+        if (!"ADMIN".equalsIgnoreCase(
+                admin.getRole()
+        )) {
+
+            throw new RuntimeException(
+                    "Only an administrator can process role requests."
+            );
+        }
+
+        if (!"ACTIVE".equalsIgnoreCase(
+                admin.getAccountStatus()
+        )) {
+
+            throw new RuntimeException(
+                    "Administrator account is not active."
+            );
+        }
+
+        return admin;
     }
 }

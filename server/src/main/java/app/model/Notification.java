@@ -1,5 +1,7 @@
 package app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -11,28 +13,33 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, length = 500)
     private String message;
 
+    @Column(length = 50)
     private String type;
 
-    // Use is_read instead of read because READ can cause SQL issues
+    /*
+     * Do NOT use database column name "read".
+     * "read" can cause SQL syntax problems in MySQL.
+     */
     @Column(name = "is_read", nullable = false)
     private boolean read = false;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     public Notification() {
     }
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+    // ==========================================
+    // GETTERS
+    // ==========================================
 
     public Long getId() {
         return id;
@@ -42,35 +49,59 @@ public class Notification {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public String getMessage() {
         return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public boolean isRead() {
         return read;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    // ==========================================
+    // SETTERS
+    // ==========================================
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setRead(boolean read) {
         this.read = read;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    // ==========================================
+    // AUTO CREATED TIME
+    // ==========================================
+
+    @PrePersist
+    protected void onCreate() {
+
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
 }

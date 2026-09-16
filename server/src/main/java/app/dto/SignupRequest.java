@@ -7,8 +7,9 @@ public class SignupRequest {
     private String password;
     private String role;
 
-    public SignupRequest() {
-    }
+    private String department;
+    private String phone;
+    private String specialization;
 
     public String getName() {
         return name;
@@ -40,5 +41,29 @@ public class SignupRequest {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
     }
 }
