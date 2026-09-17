@@ -3569,3 +3569,1970 @@ textarea:focus-visible {
         transition-duration: 0.01ms !important;
     }
 }
+/* =========================================================
+   CAMPUSFIX - CREATE COMPLAINT PAGE
+   ========================================================= */
+
+.complaint-page {
+    width: 100%;
+    min-height: 100vh;
+
+    padding: 32px 20px 50px;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(99, 102, 241, 0.08),
+            transparent 30%
+        ),
+        #f5f7fb;
+}
+
+
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
+.complaint-form-card {
+    width: min(900px, 100%);
+
+    margin: 0 auto;
+
+    padding: 34px 38px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 18px 50px rgba(31, 41, 55, 0.08);
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.back-button {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin-bottom: 18px;
+
+    padding: 9px 14px;
+
+    border: 1px solid #e2e6ee;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    color: #4b5563;
+
+    font-size: 14px;
+
+    font-weight: 650;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.back-button:hover {
+    background: #f5f5ff;
+
+    border-color: #c7c9ff;
+
+    color: #4f46e5;
+}
+
+
+/* =========================================================
+   PAGE TITLE
+   ========================================================= */
+
+.complaint-form-card h1 {
+    margin: 0 0 8px;
+
+    color: #20283a;
+
+    font-size: 30px;
+
+    line-height: 1.25;
+
+    font-weight: 800;
+
+    letter-spacing: -0.6px;
+}
+
+
+/* =========================================================
+   DESCRIPTION UNDER TITLE
+   ========================================================= */
+
+.complaint-form-card > p {
+    margin: 0 0 28px;
+
+    color: #7b8799;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.complaint-form-card form {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0;
+}
+
+
+/* =========================================================
+   FORM FIELD
+   ========================================================= */
+
+.complaint-field {
+    width: 100%;
+
+    margin-bottom: 21px;
+}
+
+
+.complaint-field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #374151;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.complaint-form-card input,
+.complaint-form-card textarea,
+.complaint-form-card select {
+    width: 100%;
+
+    border: 1px solid #d8deea;
+
+    border-radius: 12px;
+
+    outline: none;
+
+    background: #fbfcff;
+
+    color: #273043;
+
+    font-size: 15px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.complaint-form-card input {
+    height: 52px;
+
+    padding: 0 15px;
+}
+
+
+.complaint-form-card textarea {
+    min-height: 130px;
+
+    padding: 14px 15px;
+
+    resize: vertical;
+
+    line-height: 1.5;
+}
+
+
+.complaint-form-card select {
+    height: 52px;
+
+    padding: 0 14px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   PLACEHOLDER
+   ========================================================= */
+
+.complaint-form-card input::placeholder,
+.complaint-form-card textarea::placeholder {
+    color: #a3adbd;
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   FOCUS
+   ========================================================= */
+
+.complaint-form-card input:focus,
+.complaint-form-card textarea:focus,
+.complaint-form-card select:focus {
+    border-color: #6366f1;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 4px rgba(99, 102, 241, 0.09);
+}
+
+
+/* =========================================================
+   FORM GRID
+   ========================================================= */
+
+.complaint-form-grid {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 18px;
+}
+
+
+/* =========================================================
+   CATEGORY + PRIORITY
+   ========================================================= */
+
+.complaint-options {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 18px;
+
+    margin-bottom: 3px;
+}
+
+
+/* =========================================================
+   CAMERA SECTION
+   ========================================================= */
+
+.camera-section {
+    width: 100%;
+
+    margin: 8px 0 27px;
+
+    padding: 28px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f7f7ff,
+            #f5f8ff
+        );
+
+    border: 2px dashed #cdd3f4;
+
+    border-radius: 17px;
+}
+
+
+/* =========================================================
+   CAMERA TITLE
+   ========================================================= */
+
+.camera-section h2 {
+    margin: 0 0 8px;
+
+    color: #4f46e5;
+
+    font-size: 21px;
+
+    font-weight: 800;
+}
+
+
+.camera-info {
+    margin: 0 0 19px;
+
+    color: #7b8799;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   CAMERA CONTAINER
+   ========================================================= */
+
+.camera-container {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
+.camera-video {
+    display: block;
+
+    width: min(720px, 100%);
+
+    aspect-ratio: 16 / 9;
+
+    margin: 15px auto 0;
+
+    object-fit: cover;
+
+    background: #111827;
+
+    border: 4px solid #ffffff;
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 10px 30px rgba(31, 41, 55, 0.15);
+}
+
+
+/* =========================================================
+   CAMERA BUTTONS
+   ========================================================= */
+
+.camera-button,
+.capture-button,
+.retake-button,
+.stop-camera-button {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 44px;
+
+    padding: 10px 18px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+/* OPEN CAMERA */
+
+.camera-button {
+    border: none;
+
+    background: #6366f1;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 7px 18px rgba(99, 102, 241, 0.20);
+}
+
+
+.camera-button:hover {
+    background: #4f46e5;
+
+    transform: translateY(-1px);
+}
+
+
+/* CAPTURE */
+
+.capture-button {
+    margin-top: 15px;
+
+    border: none;
+
+    background: #16a34a;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 7px 18px rgba(22, 163, 74, 0.18);
+}
+
+
+.capture-button:hover {
+    background: #15803d;
+
+    transform: translateY(-1px);
+}
+
+
+/* STOP */
+
+.stop-camera-button {
+    margin-top: 10px;
+
+    border: 1px solid #d8deea;
+
+    background: #ffffff;
+
+    color: #64748b;
+}
+
+
+.stop-camera-button:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================================================
+   PHOTO PREVIEW
+   ========================================================= */
+
+.photo-preview {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+}
+
+
+.photo-preview img {
+    display: block;
+
+    width: min(720px, 100%);
+
+    max-height: 480px;
+
+    margin: 8px auto 0;
+
+    padding: 5px;
+
+    object-fit: contain;
+
+    border: 1px solid #dfe4ec;
+
+    border-radius: 14px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 8px 25px rgba(31, 41, 55, 0.08);
+}
+
+
+/* =========================================================
+   PHOTO SUCCESS
+   ========================================================= */
+
+.photo-success,
+.camera-ready {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 10px 0;
+
+    padding: 7px 12px;
+
+    border-radius: 20px;
+
+    background: #ecfdf3;
+
+    color: #15803d;
+
+    font-size: 12px;
+
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   RETAKE
+   ========================================================= */
+
+.retake-button {
+    margin-top: 13px;
+
+    border: none;
+
+    background: #f59e0b;
+
+    color: #ffffff;
+}
+
+
+.retake-button:hover {
+    background: #d97706;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   CAMERA LOADING
+   ========================================================= */
+
+.camera-loading {
+    margin: 13px 0;
+
+    color: #b45309;
+
+    font-size: 13px;
+
+    font-weight: 650;
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
+.submit-button {
+    width: 100%;
+
+    min-height: 56px;
+
+    margin-top: 5px;
+
+    padding: 13px 20px;
+
+    border: none;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #5b55ed,
+            #7770ff
+        );
+
+    color: #ffffff;
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 12px 26px rgba(99, 102, 241, 0.20);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+.submit-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 16px 30px rgba(99, 102, 241, 0.28);
+}
+
+
+.submit-button:disabled {
+    background: #cbd1dc;
+
+    color: #ffffff;
+
+    box-shadow: none;
+
+    cursor: not-allowed;
+
+    opacity: 0.75;
+}
+
+
+/* =========================================================
+   ERROR / SUCCESS MESSAGE
+   ========================================================= */
+
+.complaint-message {
+    margin: 18px 0;
+
+    padding: 13px 15px;
+
+    border-radius: 11px;
+
+    background: #eff6ff;
+
+    border: 1px solid #bfdbfe;
+
+    color: #1d4ed8;
+
+    text-align: center;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   REQUIRED STAR
+   ========================================================= */
+
+.complaint-form-card label::after {
+    content: "";
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .complaint-page {
+        padding: 20px 12px 35px;
+    }
+
+
+    .complaint-form-card {
+        padding: 25px 18px;
+
+        border-radius: 16px;
+    }
+
+
+    .complaint-form-card h1 {
+        font-size: 25px;
+    }
+
+
+    .complaint-form-grid,
+    .complaint-options {
+        grid-template-columns: 1fr;
+
+        gap: 0;
+    }
+
+
+    .camera-section {
+        padding: 20px 14px;
+    }
+
+
+    .camera-video {
+        border-radius: 11px;
+    }
+
+
+    .camera-button,
+    .capture-button,
+    .retake-button,
+    .stop-camera-button {
+        width: 100%;
+
+        max-width: 300px;
+    }
+
+}
+/* =========================================================
+   FINAL AUTH POLISH
+   ========================================================= */
+
+.signup-card {
+    width: min(560px, 100%);
+}
+
+.auth-decoration {
+    position: absolute;
+    border-radius: 999px;
+    pointer-events: none;
+    filter: blur(1px);
+}
+
+.auth-decoration-one {
+    width: 260px;
+    height: 260px;
+    top: -100px;
+    left: -80px;
+    background: rgba(91, 92, 240, 0.10);
+}
+
+.auth-decoration-two {
+    width: 320px;
+    height: 320px;
+    right: -120px;
+    bottom: -140px;
+    background: rgba(6, 182, 212, 0.08);
+}
+
+.button-arrow {
+    margin-left: 8px;
+    font-size: 18px;
+}
+
+.button-icon {
+    margin-right: 6px;
+}
+
+.empty-state-content {
+    width: 100%;
+}
+
+/* =========================================================
+   FINAL RESPONSIVE POLISH
+   ========================================================= */
+
+@media (max-width: 760px) {
+    .dashboard-header,
+    .admin-header,
+    .technician-header {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .user-info,
+    .admin-user,
+    .technician-user {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .admin-stats,
+    .technician-stats,
+    .dashboard-grid,
+    .analytics-status-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .auth-container {
+        padding: 20px 12px;
+    }
+
+    .auth-card {
+        padding: 28px 20px;
+        border-radius: 18px;
+    }
+
+    .admin-stats,
+    .technician-stats,
+    .dashboard-grid,
+    .analytics-status-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-content,
+    .technician-content,
+    .dashboard-content {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+}
+
+/* =========================================================
+   CAMPUSFIX GLOBAL THEME
+   Single theme controlled by App.jsx
+   Default: DARK BLUE
+   ========================================================= */
+
+body.theme-dark {
+    background: #06111f;
+    color: #e8f0fb;
+}
+
+body.theme-dark .app-shell {
+    min-height: 100vh;
+    background: #06111f;
+    color: #e8f0fb;
+}
+
+/* ---------- DARK BLUE VARIABLES ---------- */
+
+body.theme-dark {
+    --primary: #3b82f6;
+    --primary-dark: #60a5fa;
+    --primary-light: rgba(59, 130, 246, 0.14);
+
+    --cyan: #22d3ee;
+    --cyan-light: rgba(34, 211, 238, 0.12);
+
+    --success: #22c55e;
+    --success-light: rgba(34, 197, 94, 0.12);
+
+    --warning: #f59e0b;
+    --warning-light: rgba(245, 158, 11, 0.13);
+
+    --danger: #f87171;
+    --danger-dark: #ef4444;
+    --danger-light: rgba(248, 113, 113, 0.12);
+
+    --purple: #818cf8;
+    --purple-light: rgba(129, 140, 248, 0.13);
+
+    --orange: #fb923c;
+    --orange-light: rgba(251, 146, 60, 0.12);
+
+    --text: #e8f0fb;
+    --text-secondary: #a9bad0;
+    --muted: #71839a;
+
+    --white: #ffffff;
+    --page: #06111f;
+    --card: #0b1a2d;
+
+    --border: #1c3048;
+    --border-dark: #2a405d;
+
+    --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.22);
+    --shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+    --shadow-lg: 0 20px 55px rgba(0, 0, 0, 0.36);
+}
+
+/* ---------- PAGE BACKGROUNDS ---------- */
+
+body.theme-dark .dashboard,
+body.theme-dark .technician-dashboard,
+body.theme-dark .admin-dashboard,
+body.theme-dark .complaint-page {
+    background:
+        radial-gradient(circle at 8% 0%, rgba(37, 99, 235, 0.16), transparent 28%),
+        radial-gradient(circle at 92% 12%, rgba(8, 145, 178, 0.11), transparent 25%),
+        #06111f;
+}
+
+/* ---------- AUTH ---------- */
+
+body.theme-dark .auth-container {
+    background:
+        radial-gradient(circle at 15% 20%, rgba(37, 99, 235, 0.18), transparent 31%),
+        radial-gradient(circle at 85% 80%, rgba(8, 145, 178, 0.12), transparent 31%),
+        linear-gradient(135deg, #06111f 0%, #08182a 50%, #071426 100%);
+}
+
+body.theme-dark .auth-container::before {
+    background: rgba(59, 130, 246, 0.10);
+}
+
+body.theme-dark .auth-container::after {
+    background: rgba(34, 211, 238, 0.07);
+}
+
+body.theme-dark .auth-card {
+    background: rgba(10, 23, 40, 0.97);
+    border-color: #1d3550;
+    box-shadow: 0 22px 65px rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(14px);
+}
+
+body.theme-dark .auth-title,
+body.theme-dark .auth-card > h1 {
+    background: linear-gradient(135deg, #60a5fa, #22d3ee);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.theme-dark .auth-card > h2,
+body.theme-dark .login-heading h2 {
+    color: #edf5ff;
+}
+
+body.theme-dark .auth-card form > label,
+body.theme-dark .auth-field label {
+    color: #b7c6d8;
+}
+
+body.theme-dark .auth-card form > input,
+body.theme-dark .auth-card form > select,
+body.theme-dark .auth-card form > textarea,
+body.theme-dark .auth-field input,
+body.theme-dark .auth-field select,
+body.theme-dark .auth-field textarea,
+body.theme-dark .input-wrapper input {
+    background: #0d1d31;
+    border-color: #29415e;
+    color: #e8f0fb;
+}
+
+body.theme-dark .auth-card form > input::placeholder,
+body.theme-dark .auth-field input::placeholder,
+body.theme-dark .input-wrapper input::placeholder {
+    color: #63758c;
+}
+
+body.theme-dark .auth-card form > input:focus,
+body.theme-dark .auth-card form > select:focus,
+body.theme-dark .auth-card form > textarea:focus,
+body.theme-dark .auth-field input:focus,
+body.theme-dark .auth-field select:focus,
+body.theme-dark .auth-field textarea:focus,
+body.theme-dark .input-wrapper input:focus {
+    background: #10243b;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14);
+}
+
+body.theme-dark .input-icon {
+    color: #7890aa;
+}
+
+/* ---------- COMMON BUTTONS ---------- */
+
+body.theme-dark .primary-button,
+body.theme-dark .camera-button,
+body.theme-dark .submit-button,
+body.theme-dark .admin-primary-button,
+body.theme-dark .admin-action-button,
+body.theme-dark .auth-card form > button[type="submit"],
+body.theme-dark .auth-submit-button {
+    background: linear-gradient(135deg, #2563eb, #0891b2);
+    box-shadow: 0 8px 22px rgba(37, 99, 235, 0.24);
+}
+
+body.theme-dark .primary-button:hover,
+body.theme-dark .camera-button:hover,
+body.theme-dark .submit-button:hover:not(:disabled),
+body.theme-dark .admin-primary-button:hover,
+body.theme-dark .admin-action-button:hover,
+body.theme-dark .auth-submit-button:hover:not(:disabled) {
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.34);
+}
+
+/* ---------- HEADER ---------- */
+
+body.theme-dark .dashboard-header,
+body.theme-dark .technician-header,
+body.theme-dark .admin-header {
+    background: rgba(7, 20, 36, 0.94);
+    border-bottom-color: #1b3048;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+body.theme-dark .dashboard-header h1,
+body.theme-dark .technician-header h1,
+body.theme-dark .admin-header h1 {
+    color: #eef6ff;
+}
+
+body.theme-dark .dashboard-header h1::before,
+body.theme-dark .technician-header h1::before,
+body.theme-dark .admin-header h1::before {
+    color: #3b82f6;
+}
+
+body.theme-dark .dashboard-header p,
+body.theme-dark .technician-header p,
+body.theme-dark .admin-header p,
+body.theme-dark .user-info > span {
+    color: #7188a2;
+}
+
+body.theme-dark .user-info strong,
+body.theme-dark .technician-user strong {
+    color: #e8f0fb;
+}
+
+/* ---------- LOGOUT ---------- */
+
+body.theme-dark .user-info button,
+body.theme-dark .technician-user > button,
+body.theme-dark .admin-logout {
+    background: #0d1d31;
+    border-color: rgba(248, 113, 113, 0.34);
+    color: #f87171;
+}
+
+body.theme-dark .user-info button:hover,
+body.theme-dark .technician-user > button:hover,
+body.theme-dark .admin-logout:hover {
+    background: rgba(248, 113, 113, 0.10);
+}
+
+/* ---------- WELCOME ---------- */
+
+body.theme-dark .welcome-card,
+body.theme-dark .technician-welcome,
+body.theme-dark .admin-welcome {
+    background:
+        linear-gradient(135deg, #12315a 0%, #0f3862 50%, #07516a 100%);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.30);
+}
+
+/* ---------- CARDS ---------- */
+
+body.theme-dark .stat-card,
+body.theme-dark .technician-stat,
+body.theme-dark .admin-stat-card,
+body.theme-dark .complaints-section,
+body.theme-dark .technician-section,
+body.theme-dark .analytics-section,
+body.theme-dark .admin-section,
+body.theme-dark .complaint-card,
+body.theme-dark .technician-complaint-card,
+body.theme-dark .admin-complaint-card,
+body.theme-dark .request-card,
+body.theme-dark .resolution-card,
+body.theme-dark .category-card,
+body.theme-dark .complaint-form-card {
+    background: #0a1728;
+    border-color: #1b3048;
+    box-shadow: var(--shadow-sm);
+}
+
+body.theme-dark .stat-card:hover,
+body.theme-dark .technician-stat:hover,
+body.theme-dark .admin-stat-card:hover,
+body.theme-dark .complaint-card:hover,
+body.theme-dark .technician-complaint-card:hover,
+body.theme-dark .admin-complaint-card:hover,
+body.theme-dark .request-card:hover {
+    border-color: #2d5278;
+    box-shadow: var(--shadow);
+}
+
+body.theme-dark .stat-card::after {
+    background: rgba(59, 130, 246, 0.10);
+}
+
+body.theme-dark .stat-card h3,
+body.theme-dark .technician-stat p,
+body.theme-dark .admin-stat-card span,
+body.theme-dark .analytics-status-card span {
+    color: #8297ae;
+}
+
+body.theme-dark .stat-card p,
+body.theme-dark .admin-stat-card strong,
+body.theme-dark .technician-stat strong {
+    color: #60a5fa;
+}
+
+/* ---------- COMPLAINT DETAILS ---------- */
+
+body.theme-dark .complaint-details h3,
+body.theme-dark .technician-complaint-details h3,
+body.theme-dark .admin-complaint-details h3,
+body.theme-dark .section-header h2,
+body.theme-dark .technician-section-header h2,
+body.theme-dark .analytics-header h2,
+body.theme-dark .admin-section-header h2,
+body.theme-dark .analytics-card-heading h3,
+body.theme-dark .request-details h3,
+body.theme-dark .empty-state h2,
+body.theme-dark .empty-state h3,
+body.theme-dark .technician-empty h2,
+body.theme-dark .technician-empty h3 {
+    color: #e8f0fb;
+}
+
+body.theme-dark .complaint-details p,
+body.theme-dark .technician-description,
+body.theme-dark .complaint-description,
+body.theme-dark .section-header p,
+body.theme-dark .technician-section-header p,
+body.theme-dark .analytics-header p,
+body.theme-dark .admin-section-header p,
+body.theme-dark .request-details p,
+body.theme-dark .request-details small {
+    color: #8297ae;
+}
+
+body.theme-dark .complaint-image {
+    background: #0d1d31;
+    border-color: #29415e;
+}
+
+body.theme-dark .no-photo,
+body.theme-dark .admin-no-photo,
+body.theme-dark .technician-no-photo {
+    background: linear-gradient(135deg, #0d1d31, #10243b);
+    border-color: #2a405d;
+    color: #71839a;
+}
+
+/* ---------- META BADGES ---------- */
+
+body.theme-dark .category,
+body.theme-dark .status-in_progress,
+body.theme-dark .assignment-count,
+body.theme-dark .request-count {
+    background: rgba(59, 130, 246, 0.14);
+    color: #7db3ff;
+}
+
+body.theme-dark .priority,
+body.theme-dark .status-pending {
+    background: rgba(245, 158, 11, 0.13);
+    color: #fbbf24;
+}
+
+body.theme-dark .technician {
+    background: rgba(34, 211, 238, 0.12) !important;
+    color: #67e8f9 !important;
+}
+
+body.theme-dark .status,
+body.theme-dark .status-resolved {
+    background: rgba(34, 197, 94, 0.12);
+    color: #4ade80;
+}
+
+/* ---------- TECHNICIAN / ADMIN DETAILS ---------- */
+
+body.theme-dark .technician-details-grid div,
+body.theme-dark .admin-details-grid span,
+body.theme-dark .analytics-status-card {
+    background: #0d1d31;
+    border-color: #1b3048;
+}
+
+body.theme-dark .technician-details-grid span,
+body.theme-dark .admin-details-grid strong {
+    color: #71839a;
+}
+
+body.theme-dark .technician-details-grid strong,
+body.theme-dark .admin-details-grid span {
+    color: #a9bad0;
+}
+
+/* ---------- REQUEST TAGS ---------- */
+
+body.theme-dark .admin-role {
+    background: #172536;
+    color: #a9bad0;
+}
+
+body.theme-dark .technician-role {
+    background: rgba(34, 211, 238, 0.12);
+    color: #67e8f9;
+}
+
+body.theme-dark .specialization-tag {
+    background: rgba(59, 130, 246, 0.13);
+    color: #7db3ff;
+}
+
+body.theme-dark .approve-button {
+    background: rgba(34, 197, 94, 0.13);
+    color: #4ade80;
+}
+
+body.theme-dark .reject-button {
+    background: rgba(248, 113, 113, 0.13);
+    color: #f87171;
+}
+
+/* ---------- FORM CONTROLS ---------- */
+
+body.theme-dark .complaint-form-card label,
+body.theme-dark .complaint-field label {
+    color: #b7c6d8;
+}
+
+body.theme-dark .complaint-form-card input,
+body.theme-dark .complaint-form-card textarea,
+body.theme-dark .complaint-form-card select,
+body.theme-dark .camera-select,
+body.theme-dark .technician-actions select,
+body.theme-dark .admin-controls select {
+    background: #0d1d31;
+    border-color: #29415e;
+    color: #e8f0fb;
+}
+
+body.theme-dark .complaint-form-card input::placeholder,
+body.theme-dark .complaint-form-card textarea::placeholder {
+    color: #63758c;
+}
+
+body.theme-dark .complaint-form-card input:focus,
+body.theme-dark .complaint-form-card textarea:focus,
+body.theme-dark .complaint-form-card select:focus,
+body.theme-dark .camera-select:focus,
+body.theme-dark .technician-actions select:focus,
+body.theme-dark .admin-controls select:focus {
+    background: #10243b;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14);
+}
+
+/* ---------- CAMERA ---------- */
+
+body.theme-dark .camera-section {
+    background: linear-gradient(135deg, #0b1d32, #0d263c);
+    border-color: #254665;
+}
+
+body.theme-dark .camera-section h2 {
+    color: #60a5fa;
+}
+
+body.theme-dark .camera-info,
+body.theme-dark .camera-loading {
+    color: #8297ae;
+}
+
+body.theme-dark .camera-video {
+    background: #020914;
+    border-color: #203a56;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.40);
+}
+
+body.theme-dark .stop-camera-button {
+    background: #0d1d31;
+    border-color: #29415e;
+    color: #a9bad0;
+}
+
+body.theme-dark .stop-camera-button:hover {
+    background: #10243b;
+}
+
+body.theme-dark .photo-preview img {
+    background: #081525;
+    border-color: #29415e;
+}
+
+/* ---------- ANALYTICS ---------- */
+
+body.theme-dark .analytics-total {
+    background: linear-gradient(135deg, #10294a, #122c45);
+    border-color: #254665;
+}
+
+body.theme-dark .analytics-total strong,
+body.theme-dark .analytics-card-heading h3 {
+    color: #e8f0fb;
+}
+
+body.theme-dark .analytics-total span,
+body.theme-dark .analytics-card-heading span,
+body.theme-dark .resolution-info small,
+body.theme-dark .category-row-top span {
+    color: #71839a;
+}
+
+body.theme-dark .analytics-status-card strong,
+body.theme-dark .category-row-top strong,
+body.theme-dark .resolution-info strong {
+    color: #dbeafe;
+}
+
+body.theme-dark .category-bar {
+    background: #1a2c42;
+}
+
+body.theme-dark .resolution-circle {
+    background: conic-gradient(
+        #3b82f6 var(--progress),
+        #1b2e45 var(--progress)
+    );
+}
+
+body.theme-dark .resolution-circle::before {
+    background: #0a1728;
+}
+
+body.theme-dark .resolution-circle strong {
+    color: #60a5fa;
+}
+
+/* ---------- EMPTY / MESSAGE ---------- */
+
+body.theme-dark .empty-state,
+body.theme-dark .technician-empty {
+    background: linear-gradient(135deg, #0a1728, #0d1d31);
+    border-color: #2a405d;
+}
+
+body.theme-dark .empty-state-icon {
+    background: rgba(59, 130, 246, 0.13);
+    color: #60a5fa;
+}
+
+body.theme-dark .empty-state p,
+body.theme-dark .technician-empty p,
+body.theme-dark .analytics-empty {
+    color: #71839a;
+}
+
+body.theme-dark .complaint-message,
+body.theme-dark .technician-message,
+body.theme-dark .admin-message {
+    background: rgba(34, 197, 94, 0.10);
+    border-color: rgba(34, 197, 94, 0.22);
+    color: #4ade80;
+}
+
+body.theme-dark .analytics-error,
+body.theme-dark .auth-error,
+body.theme-dark .message.error {
+    background: rgba(248, 113, 113, 0.10);
+    border-color: rgba(248, 113, 113, 0.24);
+    color: #fca5a5;
+}
+
+body.theme-dark .auth-message,
+body.theme-dark .message.success {
+    background: rgba(34, 197, 94, 0.10);
+    border-color: rgba(34, 197, 94, 0.22);
+    color: #4ade80;
+}
+
+/* ---------- LINKS ---------- */
+
+body.theme-dark .switch-auth,
+body.theme-dark .switch-text {
+    color: #71839a;
+}
+
+body.theme-dark .switch-auth button,
+body.theme-dark .switch-text button,
+body.theme-dark .link-button,
+body.theme-dark .back-button {
+    color: #60a5fa;
+}
+
+body.theme-dark .switch-auth button:hover,
+body.theme-dark .switch-text button:hover,
+body.theme-dark .link-button:hover,
+body.theme-dark .back-button:hover {
+    color: #93c5fd;
+}
+
+/* ---------- BACK BUTTON ---------- */
+
+body.theme-dark .back-button {
+    background: #0d1d31;
+    border-color: #29415e;
+}
+
+body.theme-dark .back-button:hover {
+    background: #10243b;
+    border-color: #35618b;
+    text-decoration: none;
+}
+
+/* ---------- THEME TOGGLE ---------- */
+
+.global-theme-toggle {
+    position: fixed;
+    top: 92px;
+    right: 22px;
+    z-index: 9999;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 42px;
+    padding: 9px 14px;
+
+    border: 1px solid #2d4c6b;
+    border-radius: 999px;
+
+    background: rgba(10, 23, 40, 0.94);
+    color: #dcecff;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(12px);
+
+    font-size: 12px;
+    font-weight: 800;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.global-theme-toggle:hover {
+    transform: translateY(-2px);
+    background: #10243b;
+    border-color: #3b82f6;
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.22);
+}
+
+.global-theme-toggle-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.global-theme-toggle-text {
+    line-height: 1;
+}
+
+body.theme-light .global-theme-toggle {
+    background: rgba(255, 255, 255, 0.96);
+    border-color: #d6ddea;
+    color: #26364a;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10);
+}
+
+/* ---------- LIGHT THEME FIXES ---------- */
+
+body.theme-light {
+    background: var(--page);
+}
+
+body.theme-light .app-shell {
+    min-height: 100vh;
+}
+
+/* ---------- SCROLLBAR ---------- */
+
+body.theme-dark ::-webkit-scrollbar-track {
+    background: #071525;
+}
+
+body.theme-dark ::-webkit-scrollbar-thumb {
+    background: #29415e;
+}
+
+body.theme-dark ::-webkit-scrollbar-thumb:hover {
+    background: #3b5d80;
+}
+
+/* ---------- ACCESSIBILITY ---------- */
+
+body.theme-dark button:focus-visible,
+body.theme-dark input:focus-visible,
+body.theme-dark select:focus-visible,
+body.theme-dark textarea:focus-visible {
+    outline-color: rgba(96, 165, 250, 0.35);
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 750px) {
+    .global-theme-toggle {
+        top: 16px;
+        right: 16px;
+        min-width: 42px;
+        width: 42px;
+        height: 42px;
+        padding: 0;
+    }
+
+    .global-theme-toggle-text {
+        display: none;
+    }
+}
+
+@media (max-width: 450px) {
+    .global-theme-toggle {
+        top: 12px;
+        right: 12px;
+        width: 40px;
+        height: 40px;
+    }
+}
+
+
+/* =========================================================
+   CAMPUSFIX GLOBAL NAVBAR + THEME SWITCH
+   ========================================================= */
+
+.app-shell {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.app-theme-navbar {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 10000;
+
+    width: 100%;
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 28px;
+
+    border-bottom: 1px solid #dbe3ee;
+    background: rgba(255, 255, 255, 0.96);
+
+    box-shadow: 0 5px 24px rgba(15, 23, 42, 0.08);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.app-theme-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+.app-theme-logo {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    color: #ffffff;
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #0891b2
+    );
+
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+
+    box-shadow:
+        0 7px 18px rgba(37, 99, 235, 0.22);
+}
+
+.app-theme-brand div {
+    min-width: 0;
+}
+
+.app-theme-brand strong {
+    display: block;
+
+    color: #17263a;
+
+    font-size: 16px;
+    line-height: 1.1;
+    font-weight: 900;
+}
+
+.app-theme-brand div > span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #73839a;
+
+    font-size: 9px;
+    line-height: 1.1;
+    font-weight: 650;
+}
+
+.app-theme-switch {
+    flex: 0 0 auto;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    height: 42px;
+    min-width: 108px;
+
+    padding: 0 15px;
+
+    border: 1px solid #d3ddea;
+    border-radius: 999px;
+
+    background: #ffffff;
+    color: #26364a;
+
+    font-size: 12px;
+    font-weight: 850;
+
+    box-shadow:
+        0 5px 16px rgba(15, 23, 42, 0.08);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.app-theme-switch:hover {
+    transform: translateY(-1px);
+    border-color: #3b82f6;
+    background: #f7fbff;
+
+    box-shadow:
+        0 8px 22px rgba(37, 99, 235, 0.15);
+}
+
+.app-theme-switch-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Content starts below the global navbar */
+.app-page-content {
+    width: 100%;
+    min-height: 100vh;
+    padding-top: 70px;
+}
+
+/* =========================================================
+   DARK BLUE NAVBAR
+   ========================================================= */
+
+body.theme-dark .app-theme-navbar {
+    border-bottom-color: #1b3048;
+    background: rgba(6, 17, 31, 0.94);
+
+    box-shadow:
+        0 6px 25px rgba(0, 0, 0, 0.30);
+}
+
+body.theme-dark .app-theme-brand strong {
+    color: #edf6ff;
+}
+
+body.theme-dark .app-theme-brand div > span {
+    color: #71869e;
+}
+
+body.theme-dark .app-theme-switch {
+    border-color: #294663;
+    background: #0b1a2d;
+    color: #dcecff;
+
+    box-shadow:
+        0 7px 22px rgba(0, 0, 0, 0.25);
+}
+
+body.theme-dark .app-theme-switch:hover {
+    border-color: #3b82f6;
+    background: #10243b;
+
+    box-shadow:
+        0 9px 25px rgba(37, 99, 235, 0.20);
+}
+
+/* =========================================================
+   IMPORTANT AUTH WIDTH FIX
+   ========================================================= */
+
+body.theme-dark .auth-container,
+body.theme-light .auth-container {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
+/* Prevent any child from creating horizontal overflow */
+.auth-container *,
+.auth-card *,
+.auth-field *,
+.input-wrapper * {
+    max-width: 100%;
+}
+
+.auth-card {
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   MOBILE NAVBAR
+   ========================================================= */
+
+@media (max-width: 650px) {
+    .app-theme-navbar {
+        height: 62px;
+        padding: 0 14px;
+    }
+
+    .app-page-content {
+        padding-top: 62px;
+    }
+
+    .app-theme-brand strong {
+        font-size: 14px;
+    }
+
+    .app-theme-brand div > span {
+        display: none;
+    }
+
+    .app-theme-logo {
+        width: 35px;
+        height: 35px;
+        flex-basis: 35px;
+    }
+
+    .app-theme-switch {
+        min-width: 42px;
+        width: 42px;
+        height: 40px;
+        padding: 0;
+    }
+
+    .app-theme-switch > span:last-child {
+        display: none;
+    }
+}
+
+@media (max-width: 380px) {
+    .app-theme-navbar {
+        padding: 0 10px;
+    }
+
+    .app-theme-brand strong {
+        font-size: 13px;
+    }
+}
+/* =========================================================
+   AUTH PAGE FINAL POLISH
+   ========================================================= */
+
+.auth-container {
+    width: 100%;
+    min-height: calc(100vh - 70px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 45px 20px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 500px !important;
+
+    margin: 0 auto;
+
+    padding: 38px 38px 32px;
+
+    border-radius: 20px;
+}
+
+/* Login / Signup headings */
+.auth-card > h1,
+.auth-title {
+    text-align: center;
+}
+
+.auth-card > h2,
+.login-heading h2 {
+    text-align: left;
+}
+
+/* Form fields */
+.auth-field {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.auth-field label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-wrapper input {
+    display: block;
+
+    width: 100%;
+    height: 52px;
+
+    padding: 0 15px 0 52px;
+
+    border-radius: 12px;
+
+    box-sizing: border-box;
+}
+
+.input-icon {
+    position: absolute;
+
+    left: 17px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+/* =========================================================
+   ACCOUNT TYPE
+   ========================================================= */
+
+.auth-field select {
+    position: relative;
+
+    width: 100%;
+    height: 52px;
+
+    padding: 0 45px 0 50px;
+
+    box-sizing: border-box;
+
+    border-radius: 12px;
+
+    appearance: auto;
+}
+
+/*
+   If Account Type uses an icon wrapper,
+   keep the icon vertically centered.
+*/
+.auth-field .input-wrapper .input-icon {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* =========================================================
+   AUTH BUTTON
+   ========================================================= */
+
+.auth-submit-button,
+.auth-card form > button[type="submit"] {
+    width: 100%;
+    min-height: 52px;
+
+    margin-top: 8px;
+
+    border-radius: 12px;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .auth-container {
+        min-height: calc(100vh - 62px);
+        padding: 30px 14px;
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 430px !important;
+
+        padding: 30px 22px 27px;
+
+        border-radius: 18px;
+    }
+
+    .input-wrapper input,
+    .auth-field select {
+        height: 50px;
+    }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+
+    .auth-container {
+        padding: 25px 10px;
+    }
+
+    .auth-card {
+        max-width: 100% !important;
+        padding: 26px 17px 24px;
+    }
+
+    .input-wrapper input,
+    .auth-field select {
+        height: 48px;
+        font-size: 14px;
+    }
+
+    .input-icon {
+        left: 14px;
+    }
+}
+.input-wrapper select {
+    width: 100%;
+    height: 52px;
+
+    padding: 0 45px 0 50px;
+
+    box-sizing: border-box;
+
+    appearance: auto;
+}
+
+.input-wrapper .input-icon {
+    position: absolute;
+
+    left: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 5;
+
+    pointer-events: none;
+}

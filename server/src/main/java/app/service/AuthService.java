@@ -21,17 +21,20 @@ public class AuthService {
     private final RoleRequestRepository roleRequestRepository;
     private final TechnicianRepository technicianRepository;
     private final PasswordHash passwordHash;
+    private final EmailService emailService;
 
     public AuthService(
             UserRepository userRepository,
             RoleRequestRepository roleRequestRepository,
             TechnicianRepository technicianRepository,
-            PasswordHash passwordHash) {
+            PasswordHash passwordHash,
+            EmailService emailService) {
 
         this.userRepository = userRepository;
         this.roleRequestRepository = roleRequestRepository;
         this.technicianRepository = technicianRepository;
         this.passwordHash = passwordHash;
+        this.emailService = emailService;
     }
 
     // ==========================================
@@ -579,12 +582,23 @@ public class AuthService {
         request.setStatus("APPROVED");
 
         request.setApprovedBy(
-                savedUser.getId()
+                verifyActiveAdmin(adminEmail).getId()
         );
 
-        return roleRequestRepository.save(
-                request
+        RoleRequest savedRequest =
+                roleRequestRepository.save(request);
+
+        emailService.sendEmail(
+                savedUser.getEmail(),
+                "CampusFix - Registration Approved",
+                "Hello " + savedUser.getName() + ",\n\n"
+                        + "Your " + savedUser.getRole().toLowerCase()
+                        + " registration request has been approved.\n\n"
+                        + "You can now log in to CampusFix using your registered email and password.\n\n"
+                        + "CampusFix Support Team"
         );
+
+        return savedRequest;
     }
 
     // ==========================================
@@ -623,9 +637,20 @@ public class AuthService {
                 admin.getId()
         );
 
-        return roleRequestRepository.save(
-                request
+        RoleRequest savedRequest =
+                roleRequestRepository.save(request);
+
+        emailService.sendEmail(
+                request.getEmail(),
+                "CampusFix - Registration Request Update",
+                "Hello " + request.getName() + ",\n\n"
+                        + "Your " + request.getRequestedRole().toLowerCase()
+                        + " registration request was not approved at this time.\n\n"
+                        + "You may contact the campus administrator for more information.\n\n"
+                        + "CampusFix Support Team"
         );
+
+        return savedRequest;
     }
 
     // ==========================================

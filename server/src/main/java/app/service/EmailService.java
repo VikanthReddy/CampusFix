@@ -1,5 +1,6 @@
 package app.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -10,32 +11,45 @@ import java.util.Optional;
 public class EmailService {
 
     private final Optional<JavaMailSender> mailSender;
+    private final boolean enabled;
 
-    public EmailService(Optional<JavaMailSender> mailSender) {
+    public EmailService(
+            Optional<JavaMailSender> mailSender,
+            @Value("${app.email.enabled:false}") boolean enabled) {
+
         this.mailSender = mailSender;
+        this.enabled = enabled;
     }
 
-    public void sendEmail(
-            String to,
-            String subject,
-            String message) {
+    public void sendEmail(String to, String subject, String message) {
 
-        if (mailSender.isEmpty()) {
-
-            System.out.println(
-                    "Email service is not configured. Email not sent."
-            );
-
+        if (!enabled) {
+            System.out.println("CampusFix email notifications are disabled.");
             return;
         }
 
-        SimpleMailMessage mail =
-                new SimpleMailMessage();
+        if (to == null || to.trim().isEmpty()) {
+            return;
+        }
 
-        mail.setTo(to);
-        mail.setSubject(subject);
-        mail.setText(message);
+        if (mailSender.isEmpty()) {
+            System.err.println(
+                    "CampusFix email is enabled, but JavaMailSender is not configured."
+            );
+            return;
+        }
 
-        mailSender.get().send(mail);
+        try {
+            SimpleMailMessage mail = new SimpleMailMessage();
+            mail.setTo(to.trim());
+            mail.setSubject(subject == null ? "CampusFix Notification" : subject);
+            mail.setText(message == null ? "" : message);
+            mailSender.get().send(mail);
+        } catch (Exception ex) {
+            // Email failure must not break complaint/user operations.
+            System.err.println(
+                    "CampusFix email could not be sent to " + to + ": " + ex.getMessage()
+            );
+        }
     }
 }

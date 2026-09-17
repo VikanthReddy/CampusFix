@@ -18,19 +18,22 @@ public class ComplaintService {
     private final AIComplaintService aiComplaintService;
     private final FileStorageService fileStorageService;
     private final NotificationService notificationService;
+    private final EmailService emailService;
 
     public ComplaintService(
             ComplaintRepository complaintRepository,
             UserRepository userRepository,
             AIComplaintService aiComplaintService,
             FileStorageService fileStorageService,
-            NotificationService notificationService) {
+            NotificationService notificationService,
+            EmailService emailService) {
 
         this.complaintRepository = complaintRepository;
         this.userRepository = userRepository;
         this.aiComplaintService = aiComplaintService;
         this.fileStorageService = fileStorageService;
         this.notificationService = notificationService;
+        this.emailService = emailService;
     }
 
     // =========================================================
@@ -204,11 +207,28 @@ public class ComplaintService {
 
         for (User admin : activeAdmins) {
 
+            String notificationMessage =
+                    "New complaint submitted: "
+                            + savedComplaint.getTitle();
+
             notificationService.createNotification(
                     admin.getId(),
-                    "New complaint submitted: "
-                            + savedComplaint.getTitle(),
+                    notificationMessage,
                     "NEW_COMPLAINT"
+            );
+
+            emailService.sendEmail(
+                    admin.getEmail(),
+                    "CampusFix - New Complaint #" + savedComplaint.getId(),
+                    "Hello " + admin.getName() + ",\n\n"
+                            + "A new campus complaint has been submitted.\n\n"
+                            + "Complaint ID: #" + savedComplaint.getId() + "\n"
+                            + "Title: " + savedComplaint.getTitle() + "\n"
+                            + "Category: " + savedComplaint.getCategory() + "\n"
+                            + "Priority: " + savedComplaint.getPriority() + "\n"
+                            + "Location: " + savedComplaint.getLocation() + "\n\n"
+                            + "Please log in to CampusFix to review and assign this complaint.\n\n"
+                            + "CampusFix Support Team"
             );
         }
 

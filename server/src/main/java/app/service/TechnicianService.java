@@ -17,12 +17,14 @@ public class TechnicianService {
     private final ComplaintRepository complaintRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final EmailService emailService;
 
     public TechnicianService(
             TechnicianRepository technicianRepository,
             ComplaintRepository complaintRepository,
             UserRepository userRepository,
-            NotificationService notificationService) {
+            NotificationService notificationService,
+            EmailService emailService) {
 
         this.technicianRepository =
                 technicianRepository;
@@ -35,6 +37,9 @@ public class TechnicianService {
 
         this.notificationService =
                 notificationService;
+
+        this.emailService =
+                emailService;
     }
 
     // =========================================================
@@ -287,6 +292,16 @@ public class TechnicianService {
                     complaint.getUser().getId(),
                     message,
                     type
+            );
+
+            emailService.sendEmail(
+                    complaint.getUser().getEmail(),
+                    "CampusFix - Complaint #" + complaint.getId() + " Status Update",
+                    "Hello " + complaint.getUser().getName() + ",\n\n"
+                            + message + "\n\n"
+                            + "Complaint: " + complaint.getTitle() + "\n"
+                            + "Technician: " + technician.getName() + "\n\n"
+                            + "CampusFix Support Team"
             );
         }
 

@@ -2,229 +2,138 @@ package app.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * Lightweight local NLP engine for CampusFix.
+ *
+ * It uses weighted phrase matching rather than a single keyword hit.
+ * This makes categorization and priority detection more reliable while
+ * keeping the application completely local and free of external API keys.
+ */
 @Service
 public class AIComplaintService {
 
-    // =====================================================
-    // COMPLAINT CATEGORY
-    // =====================================================
+    private static final String ELECTRICAL = "ELECTRICAL";
+    private static final String PLUMBING = "PLUMBING";
+    private static final String NETWORK = "NETWORK";
+    private static final String FURNITURE = "FURNITURE";
+    private static final String CIVIL = "CIVIL";
+    private static final String GENERAL_MAINTENANCE = "GENERAL MAINTENANCE";
+    private static final String GENERAL = "GENERAL";
 
-    public String categorizeComplaint(
-            String title,
-            String description) {
+    public String categorizeComplaint(String title, String description) {
+        String text = normalize(title, description);
 
-        String text =
-                ((title == null ? "" : title) + " "
-                        + (description == null ? "" : description))
-                        .toLowerCase();
+        Map<String, Integer> scores = new LinkedHashMap<>();
+        scores.put(ELECTRICAL, score(text,
+                "electricity", "electrical", "electric", "power cut", "power failure",
+                "short circuit", "sparking", "spark", "shock", "switch", "socket",
+                "plug", "wire", "wiring", "fan", "light", "bulb", "tube light", "ac",
+                "air conditioner", "current"));
 
-        // -------------------------------------------------
-        // ELECTRICAL
-        // -------------------------------------------------
+        scores.put(PLUMBING, score(text,
+                "plumbing", "water leak", "water leakage", "leak", "leakage", "tap",
+                "pipe", "washroom", "toilet", "sink", "drain", "flush", "faucet",
+                "water supply", "water problem"));
 
-        if (containsAny(
-                text,
-                "electric",
-                "electricity",
-                "current",
-                "power",
-                "switch",
-                "socket",
-                "plug",
-                "wire",
-                "wiring",
-                "fan",
-                "light",
-                "bulb",
-                "tube light",
-                "ac",
-                "air conditioner"
-        )) {
-            return "ELECTRICAL";
+        scores.put(NETWORK, score(text,
+                "wifi", "wi-fi", "internet", "network", "router", "ethernet", "lan",
+                "connectivity", "connection", "no internet", "internet down", "online"));
+
+        scores.put(FURNITURE, score(text,
+                "chair", "desk", "table", "bench", "furniture", "door", "window",
+                "cupboard", "drawer", "seat", "broken chair", "broken desk"));
+
+        scores.put(CIVIL, score(text,
+                "wall", "floor", "ceiling", "roof", "building", "crack", "cracked",
+                "paint", "construction", "road", "pothole", "civil", "tile", "tiles",
+                "water seepage"));
+
+        scores.put(GENERAL_MAINTENANCE, score(text,
+                "cleaning", "clean", "garbage", "dust", "maintenance", "repair",
+                "classroom", "laboratory", "lab", "corridor", "campus", "garden",
+                "washroom cleaning", "waste"));
+
+        String bestCategory = GENERAL;
+        int bestScore = 0;
+
+        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
+            if (entry.getValue() > bestScore) {
+                bestScore = entry.getValue();
+                bestCategory = entry.getKey();
+            }
         }
 
-        // -------------------------------------------------
-        // PLUMBING
-        // -------------------------------------------------
-
-        if (containsAny(
-                text,
-                "water",
-                "tap",
-                "pipe",
-                "plumbing",
-                "leak",
-                "leakage",
-                "washroom",
-                "toilet",
-                "sink",
-                "drain",
-                "flush"
-        )) {
-            return "PLUMBING";
-        }
-
-        // -------------------------------------------------
-        // NETWORK
-        // -------------------------------------------------
-
-        if (containsAny(
-                text,
-                "wifi",
-                "wi-fi",
-                "internet",
-                "network",
-                "router",
-                "ethernet",
-                "lan",
-                "connection",
-                "connectivity"
-        )) {
-            return "NETWORK";
-        }
-
-        // -------------------------------------------------
-        // FURNITURE
-        // -------------------------------------------------
-
-        if (containsAny(
-                text,
-                "chair",
-                "desk",
-                "table",
-                "bench",
-                "furniture",
-                "door",
-                "window",
-                "cupboard",
-                "drawer",
-                "broken seat"
-        )) {
-            return "FURNITURE";
-        }
-
-        // -------------------------------------------------
-        // CIVIL
-        // -------------------------------------------------
-
-        if (containsAny(
-                text,
-                "wall",
-                "floor",
-                "ceiling",
-                "roof",
-                "building",
-                "crack",
-                "paint",
-                "construction",
-                "road",
-                "pothole",
-                "civil"
-        )) {
-            return "CIVIL";
-        }
-
-        // -------------------------------------------------
-        // GENERAL MAINTENANCE
-        // -------------------------------------------------
-
-        if (containsAny(
-                text,
-                "cleaning",
-                "clean",
-                "garbage",
-                "dust",
-                "maintenance",
-                "repair",
-                "campus",
-                "classroom",
-                "laboratory",
-                "lab"
-        )) {
-            return "GENERAL MAINTENANCE";
-        }
-
-        return "GENERAL";
+        return bestCategory;
     }
 
-    // =====================================================
-    // COMPLAINT PRIORITY
-    // =====================================================
+    public String determinePriority(String title, String description) {
+        String text = normalize(title, description);
 
-    public String determinePriority(
-            String title,
-            String description) {
+        int urgentScore = score(text,
+                "fire", "flame", "smoke", "electric shock", "shock", "sparking",
+                "spark", "short circuit", "explosion", "danger", "dangerous",
+                "emergency", "flood", "major leakage", "gas leak", "life threatening",
+                "security risk", "unsafe", "accident");
 
-        String text =
-                ((title == null ? "" : title) + " "
-                        + (description == null ? "" : description))
-                        .toLowerCase();
+        int highScore = score(text,
+                "not working", "completely broken", "power failure", "internet down",
+                "water supply stopped", "major", "severe", "urgent", "critical",
+                "broken", "damaged", "leaking");
 
-        // -------------------------------------------------
-        // HIGH PRIORITY
-        // -------------------------------------------------
+        int mediumScore = score(text,
+                "problem", "issue", "repair", "slow", "fault", "faulty", "needs fixing",
+                "maintenance", "noise", "minor damage");
 
-        if (containsAny(
-                text,
-                "fire",
-                "smoke",
-                "shock",
-                "electric shock",
-                "danger",
-                "dangerous",
-                "emergency",
-                "short circuit",
-                "sparking",
-                "spark",
-                "flood",
-                "major leakage",
-                "security"
-        )) {
+        if (urgentScore >= 3 || containsAny(text,
+                "fire", "electric shock", "short circuit", "gas leak", "explosion")) {
+            return "URGENT";
+        }
+
+        if (highScore >= 4 || urgentScore >= 2) {
             return "HIGH";
         }
 
-        // -------------------------------------------------
-        // MEDIUM PRIORITY
-        // -------------------------------------------------
-
-        if (containsAny(
-                text,
-                "not working",
-                "broken",
-                "damaged",
-                "leak",
-                "slow",
-                "problem",
-                "issue",
-                "repair"
-        )) {
+        if (mediumScore >= 2 || highScore >= 2 || urgentScore >= 1) {
             return "MEDIUM";
         }
-
-        // -------------------------------------------------
-        // LOW PRIORITY
-        // -------------------------------------------------
 
         return "LOW";
     }
 
-    // =====================================================
-    // KEYWORD MATCHING
-    // =====================================================
+    private int score(String text, String... phrases) {
+        int total = 0;
+        for (String phrase : phrases) {
+            if (containsPhrase(text, phrase)) {
+                total += phrase.contains(" ") ? 3 : 2;
+            }
+        }
+        return total;
+    }
 
-    private boolean containsAny(
-            String text,
-            String... keywords) {
-
-        for (String keyword : keywords) {
-
-            if (text.contains(
-                    keyword.toLowerCase()
-            )) {
+    private boolean containsAny(String text, String... phrases) {
+        for (String phrase : phrases) {
+            if (containsPhrase(text, phrase)) {
                 return true;
             }
         }
-
         return false;
+    }
+
+    private boolean containsPhrase(String text, String phrase) {
+        String normalizedPhrase = phrase.toLowerCase().trim();
+        if (normalizedPhrase.isEmpty()) {
+            return false;
+        }
+        return text.matches(".*(?s)(^|\\W)" + java.util.regex.Pattern.quote(normalizedPhrase) + "($|\\W).*");
+    }
+
+    private String normalize(String title, String description) {
+        String combined = (title == null ? "" : title) + " "
+                + (description == null ? "" : description);
+        return combined.toLowerCase().replaceAll("[^a-z0-9\\s-]", " ")
+                .replaceAll("\\s+", " ").trim();
     }
 }

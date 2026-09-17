@@ -17,17 +17,20 @@ public class AdminService {
     private final TechnicianRepository technicianRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final EmailService emailService;
 
     public AdminService(
             ComplaintRepository complaintRepository,
             TechnicianRepository technicianRepository,
             UserRepository userRepository,
-            NotificationService notificationService) {
+            NotificationService notificationService,
+            EmailService emailService) {
 
         this.complaintRepository = complaintRepository;
         this.technicianRepository = technicianRepository;
         this.userRepository = userRepository;
         this.notificationService = notificationService;
+        this.emailService = emailService;
     }
 
     // =========================================================
@@ -143,6 +146,17 @@ public class AdminService {
                     message,
                     notificationType
             );
+
+            emailService.sendEmail(
+                    complaint.getUser().getEmail(),
+                    "CampusFix - Complaint #" + complaint.getId() + " Update",
+                    "Hello " + complaint.getUser().getName() + ",\n\n"
+                            + message + "\n\n"
+                            + "Complaint: " + complaint.getTitle() + "\n"
+                            + "Category: " + complaint.getCategory() + "\n"
+                            + "Priority: " + complaint.getPriority() + "\n\n"
+                            + "CampusFix Support Team"
+            );
         }
 
         // =====================================================
@@ -168,16 +182,26 @@ public class AdminService {
                                     .getAccountStatus()
                     )) {
 
-                notificationService.createNotification(
-                        technicianUser.getId(),
-
+                String technicianMessage =
                         "Complaint #"
                                 + complaint.getId()
                                 + " status changed to "
                                 + normalizedStatus
-                                + ".",
+                                + ".";
 
+                notificationService.createNotification(
+                        technicianUser.getId(),
+                        technicianMessage,
                         "COMPLAINT_STATUS_UPDATED"
+                );
+
+                emailService.sendEmail(
+                        technicianUser.getEmail(),
+                        "CampusFix - Complaint #" + complaint.getId() + " Status Update",
+                        "Hello " + technicianUser.getName() + ",\n\n"
+                                + technicianMessage + "\n\n"
+                                + "Complaint: " + complaint.getTitle() + "\n\n"
+                                + "CampusFix Support Team"
                 );
             }
         }
@@ -359,14 +383,27 @@ public class AdminService {
                                 .getAccountStatus()
                 )) {
 
-            notificationService.createNotification(
-
-                    technicianUser.getId(),
-
+            String technicianMessage =
                     "A new complaint has been assigned to you: "
-                            + complaint.getTitle(),
+                            + complaint.getTitle();
 
+            notificationService.createNotification(
+                    technicianUser.getId(),
+                    technicianMessage,
                     "COMPLAINT_ASSIGNED"
+            );
+
+            emailService.sendEmail(
+                    technicianUser.getEmail(),
+                    "CampusFix - New Complaint Assigned #" + complaint.getId(),
+                    "Hello " + technicianUser.getName() + ",\n\n"
+                            + technicianMessage + "\n\n"
+                            + "Complaint ID: #" + complaint.getId() + "\n"
+                            + "Category: " + complaint.getCategory() + "\n"
+                            + "Priority: " + complaint.getPriority() + "\n"
+                            + "Location: " + complaint.getLocation() + "\n\n"
+                            + "Please log in to CampusFix to view and handle the complaint.\n\n"
+                            + "CampusFix Support Team"
             );
         }
 
@@ -376,17 +413,28 @@ public class AdminService {
 
         if (complaint.getUser() != null) {
 
-            notificationService.createNotification(
-
-                    complaint.getUser().getId(),
-
+            String studentMessage =
                     "Technician "
                             + technician.getName()
                             + " has been assigned to your complaint #"
                             + complaint.getId()
-                            + ".",
+                            + ".";
 
+            notificationService.createNotification(
+                    complaint.getUser().getId(),
+                    studentMessage,
                     "TECHNICIAN_ASSIGNED"
+            );
+
+            emailService.sendEmail(
+                    complaint.getUser().getEmail(),
+                    "CampusFix - Technician Assigned to Complaint #" + complaint.getId(),
+                    "Hello " + complaint.getUser().getName() + ",\n\n"
+                            + studentMessage + "\n\n"
+                            + "Technician: " + technician.getName() + "\n"
+                            + "Specialization: " + technician.getSpecialization() + "\n"
+                            + "Complaint: " + complaint.getTitle() + "\n\n"
+                            + "CampusFix Support Team"
             );
         }
 

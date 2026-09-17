@@ -10,22 +10,42 @@ import CreateComplaint from "./pages/CreateComplaint";
 import "./App.css";
 
 function App() {
-
     const [user, setUser] = useState(null);
     const [page, setPage] = useState("login");
 
+    // ==========================================
+    // GLOBAL THEME
+    // ==========================================
+
+    const [theme, setTheme] = useState(
+        () => localStorage.getItem("campusfix-theme") || "dark"
+    );
+
+    useEffect(() => {
+        document.body.classList.toggle("theme-dark", theme === "dark");
+        document.body.classList.toggle("theme-light", theme === "light");
+
+        localStorage.setItem("campusfix-theme", theme);
+
+        return () => {
+            document.body.classList.remove("theme-dark");
+            document.body.classList.remove("theme-light");
+        };
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme((current) =>
+            current === "dark" ? "light" : "dark"
+        );
+    };
 
     // ==========================================
     // LOAD SAVED LOGIN
     // ==========================================
 
     useEffect(() => {
-
-        const savedUser =
-            localStorage.getItem("user");
-
-        const token =
-            localStorage.getItem("token");
+        const savedUser = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
 
         if (!savedUser || !token) {
             setUser(null);
@@ -34,301 +54,212 @@ function App() {
         }
 
         try {
-
-            const loggedUser =
-                JSON.parse(savedUser);
+            const loggedUser = JSON.parse(savedUser);
 
             if (!loggedUser?.role) {
-                throw new Error(
-                    "Invalid user"
-                );
+                throw new Error("Invalid user");
             }
 
             setUser(loggedUser);
 
-            // Go directly to correct dashboard
-
-            if (
-                loggedUser.role ===
-                "ADMIN"
-            ) {
+            if (loggedUser.role === "ADMIN") {
                 setPage("admin");
-            }
-
-            else if (
-                loggedUser.role ===
-                "TECHNICIAN"
-            ) {
+            } else if (loggedUser.role === "TECHNICIAN") {
                 setPage("technician");
-            }
-
-            else {
+            } else {
                 setPage("student");
             }
-
         } catch (error) {
+            console.error("Invalid saved user:", error);
 
-            console.error(
-                "Invalid saved user:",
-                error
-            );
-
-            localStorage.removeItem(
-                "user"
-            );
-
-            localStorage.removeItem(
-                "token"
-            );
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
 
             setUser(null);
             setPage("login");
         }
-
     }, []);
-
 
     // ==========================================
     // LOGIN
     // ==========================================
 
-    const handleLogin = (
-        loggedUser,
-        token
-    ) => {
-
-        if (
-            !loggedUser ||
-            !token
-        ) {
+    const handleLogin = (loggedUser, token) => {
+        if (!loggedUser || !token) {
             return;
         }
 
         localStorage.setItem(
             "user",
-            JSON.stringify(
-                loggedUser
-            )
+            JSON.stringify(loggedUser)
         );
 
-        localStorage.setItem(
-            "token",
-            token
-        );
+        localStorage.setItem("token", token);
 
         setUser(loggedUser);
 
-
-        // Role-based dashboard
-
-        if (
-            loggedUser.role ===
-            "ADMIN"
-        ) {
+        if (loggedUser.role === "ADMIN") {
             setPage("admin");
-        }
-
-        else if (
-            loggedUser.role ===
-            "TECHNICIAN"
-        ) {
+        } else if (loggedUser.role === "TECHNICIAN") {
             setPage("technician");
-        }
-
-        else {
+        } else {
             setPage("student");
         }
     };
-
 
     // ==========================================
     // LOGOUT
     // ==========================================
 
     const handleLogout = () => {
-
-        localStorage.removeItem(
-            "user"
-        );
-
-        localStorage.removeItem(
-            "token"
-        );
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
 
         setUser(null);
         setPage("login");
     };
 
-
     // ==========================================
-    // SIGNUP
+    // NAVIGATION
     // ==========================================
 
     const openSignup = () => {
         setPage("signup");
     };
 
-
-    // ==========================================
-    // LOGIN PAGE
-    // ==========================================
-
     const openLogin = () => {
         setPage("login");
     };
 
-
-    // ==========================================
-    // CREATE COMPLAINT
-    // ==========================================
-
     const openCreateComplaint = () => {
-
-        if (
-            user?.role !==
-            "STUDENT"
-        ) {
+        if (user?.role !== "STUDENT") {
             return;
         }
 
-        setPage(
-            "create-complaint"
-        );
+        setPage("create-complaint");
     };
 
+    const backToStudentDashboard = () => {
+        if (user?.role === "STUDENT") {
+            setPage("student");
+        }
+    };
 
     // ==========================================
-    // BACK TO STUDENT DASHBOARD
+    // GLOBAL THEME NAVBAR
     // ==========================================
 
-    const backToStudentDashboard =
-        () => {
+    const ThemeNavbar = () => (
+        <div className="app-theme-navbar">
+            <div className="app-theme-brand">
+                <span className="app-theme-logo">CF</span>
 
-            if (
-                user?.role ===
-                "STUDENT"
-            ) {
-                setPage("student");
+                <div>
+                    <strong>CampusFix</strong>
+                    <span>Campus Complaint Management</span>
+                </div>
+            </div>
+
+            <button
+                className="app-theme-switch"
+                onClick={toggleTheme}
+                type="button"
+                aria-label={`Switch to ${
+                    theme === "dark" ? "light" : "dark"
+                } theme`}
+            >
+                <span className="app-theme-switch-icon">
+                    {theme === "dark" ? "☀️" : "🌙"}
+                </span>
+
+                <span>
+                    {theme === "dark" ? "Light" : "Dark"}
+                </span>
+            </button>
+        </div>
+    );
+
+    // ==========================================
+    // RENDER PAGE
+    // ==========================================
+
+    const renderPage = () => {
+        // NOT LOGGED IN
+        if (!user) {
+            if (page === "signup") {
+                return (
+                    <Signup
+                        onSwitchToLogin={openLogin}
+                    />
+                );
             }
-        };
-
-
-    // ==========================================
-    // NOT LOGGED IN
-    // ==========================================
-
-    if (!user) {
-
-        if (
-            page === "signup"
-        ) {
 
             return (
-                <Signup
-                    onSwitchToLogin={
-                        openLogin
-                    }
+                <Login
+                    onSwitchToSignup={openSignup}
+                    onLogin={handleLogin}
                 />
             );
         }
 
-        return (
-            <Login
-                onSwitchToSignup={
-                    openSignup
-                }
-                onLogin={
-                    handleLogin
-                }
-            />
-        );
-    }
-
-
-    // ==========================================
-    // STUDENT
-    // ==========================================
-
-    if (
-        user.role ===
-        "STUDENT"
-    ) {
-
-        if (
-            page ===
-            "create-complaint"
-        ) {
+        // STUDENT
+        if (user.role === "STUDENT") {
+            if (page === "create-complaint") {
+                return (
+                    <CreateComplaint
+                        onBack={backToStudentDashboard}
+                        onComplaintCreated={
+                            backToStudentDashboard
+                        }
+                    />
+                );
+            }
 
             return (
-                <CreateComplaint
-                    onBack={
-                        backToStudentDashboard
+                <StudentDashboard
+                    onNewComplaint={
+                        openCreateComplaint
                     }
-                    onComplaintCreated={
-                        backToStudentDashboard
-                    }
+                    onLogout={handleLogout}
                 />
             );
         }
 
-        return (
-            <StudentDashboard
-                onNewComplaint={
-                    openCreateComplaint
-                }
-                onLogout={
-                    handleLogout
-                }
-            />
-        );
-    }
+        // TECHNICIAN
+        if (user.role === "TECHNICIAN") {
+            return (
+                <TechnicianDashboard
+                    onLogout={handleLogout}
+                />
+            );
+        }
 
+        // ADMIN
+        if (user.role === "ADMIN") {
+            return (
+                <AdminDashboard
+                    onLogout={handleLogout}
+                />
+            );
+        }
 
-    // ==========================================
-    // TECHNICIAN
-    // ==========================================
+        return null;
+    };
 
-    if (
-        user.role ===
-        "TECHNICIAN"
-    ) {
-
-        return (
-            <TechnicianDashboard
-                onLogout={
-                    handleLogout
-                }
-            />
-        );
-    }
-
-
-    // ==========================================
-    // ADMIN
-    // ==========================================
-
-    if (
-        user.role ===
-        "ADMIN"
-    ) {
-
-        return (
-            <AdminDashboard
-                onLogout={
-                    handleLogout
-                }
-            />
-        );
-    }
-
-
-    // ==========================================
-    // UNKNOWN ROLE
-    // ==========================================
-
-    handleLogout();
-
-    return null;
+    return (
+        <div
+            className={`app-shell ${
+                theme === "dark"
+                    ? "app-shell-dark"
+                    : "app-shell-light"
+            }`}
+        >
+            <ThemeNavbar />
+            <main className="app-page-content">
+                {renderPage()}
+            </main>
+        </div>
+    );
 }
 
 export default App;
