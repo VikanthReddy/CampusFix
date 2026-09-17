@@ -333,48 +333,34 @@ function TechnicianDashboard() {
             ================================== */}
 
             <header className="technician-header">
-
-                <div>
-
-                    <h1>
-                        CampusFix
-                    </h1>
-
-                    <p>
-                        Technician Dashboard
-                    </p>
-
+                <div className="technician-brand">
+                    <div className="technician-brand-icon">CF</div>
+                    <div>
+                        <h1>CampusFix</h1>
+                        <p>Technician Dashboard</p>
+                    </div>
                 </div>
 
-
                 <div className="technician-user">
-
-                    <div>
-
-                        <strong>
-                            {user.name}
-                        </strong>
-
-                        <span>
-                            Technician
-                        </span>
-
+                    <div className="technician-profile">
+                        <div className="technician-avatar">
+                            {(user.name || "T").charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <strong>{user.name}</strong>
+                            <span>Technician</span>
+                        </div>
                     </div>
-
-
-                    {/* NOTIFICATION BELL */}
 
                     <NotificationBell />
 
-
                     <button
+                        className="technician-logout"
                         onClick={logout}
                     >
                         Logout
                     </button>
-
                 </div>
-
             </header>
 
 
@@ -393,7 +379,7 @@ function TechnicianDashboard() {
 
                     <div>
 
-                        <p className="welcome-label">
+                        <p className="technician-welcome-label">
                             TECHNICIAN PORTAL
                         </p>
 
@@ -418,27 +404,17 @@ function TechnicianDashboard() {
 
 
                     {technician && (
-
-                        <div className="specialization-card">
-
-                            <span>
-                                Specialization
-                            </span>
-
-
-                            <strong>
-
-                                🔧{" "}
-
-                                {
-                                    technician.specialization ||
-                                    "General Maintenance"
-                                }
-
-                            </strong>
-
+                        <div className="technician-welcome-side">
+                            <div className="technician-welcome-icon">🔧</div>
+                            <div className="specialization-card">
+                                <span>Specialization</span>
+                                <strong>
+                                    🔧{" "}
+                                    {technician.specialization ||
+                                        "General Maintenance"}
+                                </strong>
+                            </div>
                         </div>
-
                     )}
 
                 </section>
@@ -464,70 +440,48 @@ function TechnicianDashboard() {
                 ================================== */}
 
                 {technician && (
+                    <section className="technician-info">
 
-                    <section className="technician-profile">
-
-                        <div>
-
-                            <span>
+                        <div className="technician-info-item">
+                            <span className="technician-info-label">
                                 Department
                             </span>
-
-                            <strong>
-                                {technician.department ||
-                                    "Not specified"}
+                            <strong className="technician-info-value">
+                                {technician.department || "Not specified"}
                             </strong>
-
                         </div>
 
-
-                        <div>
-
-                            <span>
+                        <div className="technician-info-item">
+                            <span className="technician-info-label">
                                 Phone
                             </span>
-
-                            <strong>
-                                {technician.phone ||
-                                    "Not specified"}
+                            <strong className="technician-info-value">
+                                {technician.phone || "Not specified"}
                             </strong>
-
                         </div>
 
-
-                        <div>
-
-                            <span>
+                        <div className="technician-info-item">
+                            <span className="technician-info-label">
                                 Availability
                             </span>
-
-                            <strong>
-
+                            <strong className="technician-info-value availability-status">
                                 {technician.available
                                     ? "Available"
                                     : "Unavailable"}
-
                             </strong>
-
                         </div>
 
-
                         <button
+                            className="availability-button"
                             onClick={() =>
-                                updateAvailability(
-                                    !technician.available
-                                )
+                                updateAvailability(!technician.available)
                             }
                         >
-
                             {technician.available
                                 ? "Set Unavailable"
                                 : "Set Available"}
-
                         </button>
-
                     </section>
-
                 )}
 
 
@@ -538,9 +492,9 @@ function TechnicianDashboard() {
                 <div className="technician-stats">
 
 
-                    <div className="technician-stat">
+                    <div className="technician-stat-card">
 
-                        <span className="stat-icon">
+                        <span className="technician-stat-icon">
                             📋
                         </span>
 
@@ -559,9 +513,9 @@ function TechnicianDashboard() {
                     </div>
 
 
-                    <div className="technician-stat">
+                    <div className="technician-stat-card">
 
-                        <span className="stat-icon">
+                        <span className="technician-stat-icon">
                             ⏳
                         </span>
 
@@ -580,9 +534,9 @@ function TechnicianDashboard() {
                     </div>
 
 
-                    <div className="technician-stat">
+                    <div className="technician-stat-card">
 
-                        <span className="stat-icon">
+                        <span className="technician-stat-icon">
                             🔧
                         </span>
 
@@ -601,9 +555,9 @@ function TechnicianDashboard() {
                     </div>
 
 
-                    <div className="technician-stat">
+                    <div className="technician-stat-card">
 
-                        <span className="stat-icon">
+                        <span className="technician-stat-icon">
                             ✅
                         </span>
 
@@ -699,7 +653,7 @@ function TechnicianDashboard() {
                                 complaint => (
 
                                     <div
-                                        className="technician-complaint-card"
+                                        className={`technician-complaint-card ${complaint.status?.toUpperCase() === "RESOLVED" ? "technician-resolved-card" : ""}`}
                                         key={
                                             complaint.id
                                         }
@@ -863,47 +817,54 @@ function TechnicianDashboard() {
 
                                             </div>
 
-
                                             {/* STATUS CONTROL */}
 
-                                            <div className="technician-actions">
+                                            {complaint.status?.toUpperCase() !== "RESOLVED" ? (
 
-                                                <label>
-                                                    Update Complaint Status
-                                                </label>
+                                                <div className="technician-controls">
 
+                                                    <div className="technician-control-group">
+                                                        <label>
+                                                            Update Complaint Status
+                                                        </label>
 
-                                                <select
-                                                    value={
-                                                        complaint.status ||
-                                                        "PENDING"
-                                                    }
-                                                    onChange={e =>
-                                                        updateStatus(
-                                                            complaint.id,
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                >
+                                                        <select
+                                                            value={
+                                                                complaint.status ||
+                                                                "PENDING"
+                                                            }
+                                                            onChange={e =>
+                                                                updateStatus(
+                                                                    complaint.id,
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                        >
+                                                            <option value="PENDING">
+                                                                Pending
+                                                            </option>
 
-                                                    <option value="PENDING">
-                                                        Pending
-                                                    </option>
+                                                            <option value="IN_PROGRESS">
+                                                                In Progress
+                                                            </option>
 
-                                                    <option value="IN_PROGRESS">
-                                                        In Progress
-                                                    </option>
+                                                            <option value="RESOLVED">
+                                                                Resolved
+                                                            </option>
+                                                        </select>
+                                                    </div>
 
-                                                    <option value="RESOLVED">
-                                                        Resolved
-                                                    </option>
+                                                </div>
 
-                                                </select>
+                                            ) : (
 
-                                            </div>
+                                                <div className="technician-resolved-message">
+                                                    ✓ Complaint resolved — no further changes allowed.
+                                                </div>
+
+                                            )}
 
                                         </div>
-
                                     </div>
 
                                 )

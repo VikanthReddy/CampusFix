@@ -1218,137 +1218,101 @@ function AdminDashboard() {
                                                 CONTROLS
                                             ================================== */}
 
-                                            <div className="admin-controls">
+                                            {/* RESOLVED COMPLAINTS ARE LOCKED */}
+                                            {complaint.status?.toUpperCase() !== "RESOLVED" && (
 
+                                                <div className="admin-controls">
 
-                                                {/* ASSIGN TECHNICIAN */}
+                                                    {/* ASSIGN TECHNICIAN */}
+                                                    <div>
 
-                                                <div>
+                                                        <label>
+                                                            Assign Technician
+                                                        </label>
 
-                                                    <label>
-                                                        Assign Technician
-                                                    </label>
+                                                        <select
+                                                            value={
+                                                                complaint.technician?.id || ""
+                                                            }
+                                                            onChange={e =>
+                                                                assignTechnician(
+                                                                    complaint.id,
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                        >
 
-
-                                                    <select
-
-                                                        value={
-                                                            complaint
-                                                                .technician
-                                                                ?.id || ""
-                                                        }
-
-                                                        onChange={e =>
-                                                            assignTechnician(
-                                                                complaint.id,
-                                                                e.target.value
-                                                            )
-                                                        }
-
-                                                    >
-
-                                                        <option value="">
+                                                            <option value="">
+                                                                {
+                                                                    getMatchingTechnicians(
+                                                                        complaint.category
+                                                                    ).length === 0
+                                                                        ? "No matching technician available"
+                                                                        : "Select Technician"
+                                                                }
+                                                            </option>
 
                                                             {
                                                                 getMatchingTechnicians(
                                                                     complaint.category
-                                                                ).length === 0
-
-                                                                    ? "No matching technician available"
-
-                                                                    : "Select Technician"
-                                                            }
-
-                                                        </option>
-
-
-                                                        {
-                                                            getMatchingTechnicians(
-                                                                complaint.category
-                                                            ).map(
-                                                                technician => (
-
+                                                                ).map(technician => (
                                                                     <option
-                                                                        key={
-                                                                            technician.id
-                                                                        }
-                                                                        value={
-                                                                            technician.id
-                                                                        }
+                                                                        key={technician.id}
+                                                                        value={technician.id}
                                                                     >
-
-                                                                        {
-                                                                            technician.name
-                                                                        }
-
+                                                                        {technician.name}
                                                                         {" - "}
-
-                                                                        {
-                                                                            technician.specialization ||
-                                                                            "General Maintenance"
-                                                                        }
-
-                                                                        {
-                                                                            technician.available
-                                                                                ? " (Available)"
-                                                                                : " (Unavailable)"
-                                                                        }
-
+                                                                        {technician.specialization || "General Maintenance"}
+                                                                        {technician.available
+                                                                            ? " (Available)"
+                                                                            : " (Unavailable)"}
                                                                     </option>
+                                                                ))
+                                                            }
+                                                        </select>
+                                                    </div>
 
+                                                    {/* UPDATE STATUS */}
+                                                    <div>
+
+                                                        <label>
+                                                            Update Status
+                                                        </label>
+
+                                                        <select
+                                                            value={
+                                                                complaint.status || "PENDING"
+                                                            }
+                                                            onChange={e =>
+                                                                updateStatus(
+                                                                    complaint.id,
+                                                                    e.target.value
                                                                 )
-                                                            )
-                                                        }
+                                                            }
+                                                        >
+                                                            <option value="PENDING">
+                                                                Pending
+                                                            </option>
 
-                                                    </select>
+                                                            <option value="IN_PROGRESS">
+                                                                In Progress
+                                                            </option>
 
-                                                </div>
-
-
-                                                {/* STATUS */}
-
-                                                <div>
-
-                                                    <label>
-                                                        Update Status
-                                                    </label>
-
-
-                                                    <select
-
-                                                        value={
-                                                            complaint.status ||
-                                                            "PENDING"
-                                                        }
-
-                                                        onChange={e =>
-                                                            updateStatus(
-                                                                complaint.id,
-                                                                e.target.value
-                                                            )
-                                                        }
-
-                                                    >
-
-                                                        <option value="PENDING">
-                                                            Pending
-                                                        </option>
-
-
-                                                        <option value="IN_PROGRESS">
-                                                            In Progress
-                                                        </option>
-
-
-                                                        <option value="RESOLVED">
-                                                            Resolved
-                                                        </option>
-
-                                                    </select>
+                                                            <option value="RESOLVED">
+                                                                Resolved
+                                                            </option>
+                                                        </select>
+                                                    </div>
 
                                                 </div>
+                                            )}
 
-                                            </div>
+                                            {/* RESOLVED MESSAGE */}
+                                            {complaint.status?.toUpperCase() === "RESOLVED" && (
+                                                <div className="resolved-complaint-message">
+                                                    ✓ Complaint resolved — no further changes allowed.
+                                                </div>
+                                            )}
 
                                         </div>
 

@@ -7,8 +7,8 @@ import app.repository.UserRepository;
 import app.service.ComplaintService;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,9 +63,7 @@ public class ComplaintController {
             // -------------------------------------------------
 
             User user =
-                    getAuthenticatedUser(
-                            authentication
-                    );
+                    getAuthenticatedUser(authentication);
 
             // -------------------------------------------------
             // CREATE REQUEST OBJECT
@@ -262,6 +260,117 @@ public class ComplaintController {
                     );
         }
     }
+
+    // =========================================================
+    // EDIT COMPLAINT
+    // STUDENT ONLY
+    //
+    // Student can edit only their own PENDING complaint.
+    // Existing complaint image is kept.
+    // =========================================================
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> updateComplaint(
+
+            @PathVariable Long id,
+
+            @RequestParam String title,
+
+            @RequestParam String description,
+
+            @RequestParam String location,
+
+            @RequestParam(required = false)
+            String category,
+
+            @RequestParam(required = false)
+            String priority,
+
+            Authentication authentication) {
+
+        try {
+
+            // -------------------------------------------------
+            // GET LOGGED-IN USER
+            // -------------------------------------------------
+
+            User user =
+                    getAuthenticatedUser(
+                            authentication
+                    );
+
+            // -------------------------------------------------
+            // CREATE UPDATED REQUEST
+            // -------------------------------------------------
+
+            ComplaintRequest request =
+                    new ComplaintRequest();
+
+            request.setTitle(title);
+
+            request.setDescription(
+                    description
+            );
+
+            request.setLocation(
+                    location
+            );
+
+            request.setCategory(
+                    category
+            );
+
+            request.setPriority(
+                    priority
+            );
+
+            // -------------------------------------------------
+            // UPDATE COMPLAINT
+            // -------------------------------------------------
+
+            Complaint updatedComplaint =
+                    complaintService.updateComplaint(
+                            id,
+                            user.getId(),
+                            request
+                    );
+
+            return ResponseEntity.ok(
+                    updatedComplaint
+            );
+
+        } catch (RuntimeException e) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(e.getMessage());
+
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            "Unable to update complaint: "
+                                    + e.getMessage()
+                    );
+        }
+    }
+
+    // =========================================================
+    // UPDATE COMPLAINT STATUS
+    // =========================================================
+
+    // Keep your existing status endpoint here if you already
+    // have one used by Admin/Technician.
+    //
+    // Do NOT make this student-editable.
+    //
+    // Example:
+    //
+    // @PutMapping("/{id}/status")
+    // @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
+    // public ResponseEntity<?> updateStatus(...) { ... }
 
     // =========================================================
     // DELETE COMPLAINT

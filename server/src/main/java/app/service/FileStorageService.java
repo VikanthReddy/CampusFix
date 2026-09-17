@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,13 +31,10 @@ public class FileStorageService {
             );
         }
 
-        String contentType =
-                file.getContentType();
+        String contentType = file.getContentType();
 
         if (contentType == null
-                || !contentType
-                .toLowerCase()
-                .startsWith("image/")) {
+                || !contentType.toLowerCase().startsWith("image/")) {
 
             throw new RuntimeException(
                     "Only image files are allowed."
@@ -47,8 +45,7 @@ public class FileStorageService {
         // ALLOWED IMAGE TYPES
         // -------------------------------------------------
 
-        String extension =
-                getExtension(file);
+        String extension = getExtension(file);
 
         if (!extension.equals(".jpg")
                 && !extension.equals(".jpeg")
@@ -62,48 +59,59 @@ public class FileStorageService {
 
         try {
 
-            Path uploadPath =
-                    Paths.get(uploadDir)
-                            .toAbsolutePath()
-                            .normalize();
+            // -------------------------------------------------
+            // CREATE UPLOAD DIRECTORY
+            // -------------------------------------------------
 
-            Files.createDirectories(
-                    uploadPath
-            );
+            Path uploadPath = Paths.get(uploadDir)
+                    .toAbsolutePath()
+                    .normalize();
+
+            Files.createDirectories(uploadPath);
 
             // -------------------------------------------------
             // UNIQUE FILE NAME
             // -------------------------------------------------
 
-            String fileName =
-                    UUID.randomUUID()
-                            .toString()
-                            + extension;
+            String fileName = UUID.randomUUID()
+                    .toString()
+                    + extension;
 
-            Path targetPath =
-                    uploadPath.resolve(fileName)
-                            .normalize();
+            Path targetPath = uploadPath
+                    .resolve(fileName)
+                    .normalize();
 
-            /*
-             * Prevent path traversal.
-             */
-            if (!targetPath.startsWith(
-                    uploadPath
-            )) {
+            // -------------------------------------------------
+            // PATH TRAVERSAL PROTECTION
+            // -------------------------------------------------
+
+            if (!targetPath.startsWith(uploadPath)) {
 
                 throw new RuntimeException(
                         "Invalid file path."
                 );
             }
 
-            Files.copy(
-                    file.getInputStream(),
-                    targetPath,
-                    StandardCopyOption.REPLACE_EXISTING
-            );
+            // -------------------------------------------------
+            // COPY IMAGE
+            // IMPORTANT:
+            // try-with-resources closes the InputStream
+            // -------------------------------------------------
 
-            return "/uploads/complaints/"
-                    + fileName;
+            try (InputStream inputStream = file.getInputStream()) {
+
+                Files.copy(
+                        inputStream,
+                        targetPath,
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+            }
+
+            // -------------------------------------------------
+            // RETURN URL
+            // -------------------------------------------------
+
+            return "/uploads/complaints/" + fileName;
 
         } catch (IOException e) {
 
@@ -118,15 +126,12 @@ public class FileStorageService {
     // GET FILE EXTENSION
     // =====================================================
 
-    private String getExtension(
-            MultipartFile file) {
+    private String getExtension(MultipartFile file) {
 
         String originalFilename =
                 file.getOriginalFilename();
 
-        if (!StringUtils.hasText(
-                originalFilename
-        )) {
+        if (!StringUtils.hasText(originalFilename)) {
 
             throw new RuntimeException(
                     "Image filename is missing."
@@ -134,9 +139,7 @@ public class FileStorageService {
         }
 
         String cleanName =
-                StringUtils.cleanPath(
-                        originalFilename
-                );
+                StringUtils.cleanPath(originalFilename);
 
         int lastDot =
                 cleanName.lastIndexOf('.');
