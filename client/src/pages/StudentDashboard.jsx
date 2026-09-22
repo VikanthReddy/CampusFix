@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../services/api";
 import NotificationBell from "../components/NotificationBell";
 
@@ -24,6 +24,20 @@ function StudentDashboard({ onNewComplaint }) {
         category: "",
         priority: ""
     });
+
+    // =========================================================
+    // EDIT CAMERA / RETAKE PHOTO STATE
+    // =========================================================
+
+    const editVideoRef = useRef(null);
+    const editCanvasRef = useRef(null);
+    const editStreamRef = useRef(null);
+    const editPreviewUrlRef = useRef(null);
+
+    const [editCameraOpen, setEditCameraOpen] = useState(false);
+    const [editCameraReady, setEditCameraReady] = useState(false);
+    const [editPhoto, setEditPhoto] = useState(null);
+    const [editPhotoPreview, setEditPhotoPreview] = useState(null);
 
 
     // =========================================================
@@ -61,6 +75,15 @@ function StudentDashboard({ onNewComplaint }) {
 
             setLoading(false);
         }
+
+        return () => {
+            stopEditCamera();
+
+            if (editPreviewUrlRef.current) {
+                URL.revokeObjectURL(editPreviewUrlRef.current);
+                editPreviewUrlRef.current = null;
+            }
+        };
 
     }, []);
 
@@ -149,13 +172,19 @@ function StudentDashboard({ onNewComplaint }) {
 
     const handleEditClick = (complaint) => {
 
-        // Only pending complaints can be edited
-
+        // Only pending complaints can be edited.
         if (
             !complaint.status ||
             complaint.status.toUpperCase() !== "PENDING"
         ) {
             return;
+        }
+
+        stopEditCamera();
+
+        if (editPreviewUrlRef.current) {
+            URL.revokeObjectURL(editPreviewUrlRef.current);
+            editPreviewUrlRef.current = null;
         }
 
         setEditingComplaint(complaint);
@@ -168,10 +197,14 @@ function StudentDashboard({ onNewComplaint }) {
             priority: complaint.priority || ""
         });
 
+        setEditPhoto(null);
+        setEditPhotoPreview(null);
+        setEditCameraOpen(false);
+        setEditCameraReady(false);
+
         setEditError("");
         setEditSuccess("");
 
-        // Scroll to edit section
         window.scrollTo({
             top: 0,
             behavior: "smooth"
@@ -185,7 +218,19 @@ function StudentDashboard({ onNewComplaint }) {
 
     const handleCancelEdit = () => {
 
+        stopEditCamera();
+
+        if (editPreviewUrlRef.current) {
+            URL.revokeObjectURL(editPreviewUrlRef.current);
+            editPreviewUrlRef.current = null;
+        }
+
         setEditingComplaint(null);
+
+        setEditPhoto(null);
+        setEditPhotoPreview(null);
+        setEditCameraOpen(false);
+        setEditCameraReady(false);
 
         setEditForm({
             title: "",
@@ -219,6 +264,241 @@ function StudentDashboard({ onNewComplaint }) {
 
 
     // =========================================================
+    // EDIT CAMERA / RETAKE PHOTO
+    // =========================================================
+
+    const openEditCamera = async () => {
+
+        setEditError("");
+        setEditSuccess("");
+        setEditCameraReady(false);
+
+        try {
+
+            if (
+                !navigator.mediaDevices ||
+                !navigator.mediaDevices.getUserMedia
+            ) {
+                setEditError(
+                    "Camera access is not supported by this browser."
+                );
+                return;
+            }
+
+            const stream =
+                await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: "environment",
+                        width: {
+                            ideal: 1280
+                        },
+                        height: {
+                            ideal: 720
+                        }
+                    },
+                    audio: false
+                });
+
+            editStreamRef.current = stream;
+            setEditCameraOpen(true);
+
+            setTimeout(async () => {
+
+                if (!editVideoRef.current) {
+                    return;
+                }
+
+                editVideoRef.current.srcObject = stream;
+
+                try {
+                    await editVideoRef.current.play();
+                } catch (error) {
+                    console.log(
+                        "Edit camera play error:",
+                        error
+                    );
+                }
+
+                setEditCameraReady(true);
+
+            }, 100);
+
+        } catch (error) {
+
+            console.error(
+                "Edit camera error:",
+                error
+            );
+
+            if (error.name === "NotAllowedError") {
+
+                setEditError(
+                    "Camera permission was denied. Please allow camera access."
+                );
+
+            } else if (error.name === "NotFoundError") {
+
+                setEditError(
+                    "No camera was found on this device."
+                );
+
+            } else {
+
+                setEditError(
+                    "Unable to open the camera. Please try again."
+                );
+            }
+        }
+    };
+
+
+    const stopEditCamera = () => {
+
+        if (editStreamRef.current) {
+
+            editStreamRef.current
+                .getTracks()
+                .forEach(track => track.stop());
+
+            editStreamRef.current = null;
+        }
+
+        if (editVideoRef.current) {
+            editVideoRef.current.srcObject = null;
+        }
+
+        setEditCameraOpen(false);
+        setEditCameraReady(false);
+    };
+
+
+    const captureEditPhoto = () => {
+
+        if (
+            !editVideoRef.current ||
+            !editCanvasRef.current ||
+            !editCameraReady
+        ) {
+            setEditError(
+                "Camera is not ready yet. Please wait a moment."
+            );
+            return;
+        }
+
+        const video = editVideoRef.current;
+        const canvas = editCanvasRef.current;
+
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+
+        if (!width || !height) {
+            setEditError(
+                "Unable to capture the camera image. Please try again."
+            );
+            return;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const context = canvas.getContext("2d");
+
+        context.drawImage(
+            video,
+            0,
+            0,
+            width,
+            height
+        );
+
+        canvas.toBlob(
+            (blob) => {
+
+                if (!blob) {
+                    setEditError(
+                        "Failed to capture photo."
+                    );
+                    return;
+                }
+
+                const file = new File(
+                    [blob],
+                    `complaint-retake-${Date.now()}.jpg`,
+                    {
+                        type: "image/jpeg"
+                    }
+                );
+
+                if (editPreviewUrlRef.current) {
+                    URL.revokeObjectURL(
+                        editPreviewUrlRef.current
+                    );
+                }
+
+                const previewUrl =
+                    URL.createObjectURL(blob);
+
+                editPreviewUrlRef.current =
+                    previewUrl;
+
+                setEditPhoto(file);
+                setEditPhotoPreview(previewUrl);
+
+                setEditSuccess(
+                    "New photo captured. It will replace the old photo."
+                );
+
+                setEditError("");
+
+                stopEditCamera();
+            },
+            "image/jpeg",
+            0.90
+        );
+    };
+
+
+    const retakeEditPhoto = () => {
+
+        if (editPreviewUrlRef.current) {
+            URL.revokeObjectURL(
+                editPreviewUrlRef.current
+            );
+
+            editPreviewUrlRef.current = null;
+        }
+
+        setEditPhoto(null);
+        setEditPhotoPreview(null);
+        setEditSuccess("");
+        setEditError("");
+
+        openEditCamera();
+    };
+
+
+    const keepExistingPhoto = () => {
+
+        stopEditCamera();
+
+        if (editPreviewUrlRef.current) {
+            URL.revokeObjectURL(
+                editPreviewUrlRef.current
+            );
+
+            editPreviewUrlRef.current = null;
+        }
+
+        setEditPhoto(null);
+        setEditPhotoPreview(null);
+
+        setEditSuccess(
+            "Existing photo will be kept."
+        );
+    };
+
+
+    // =========================================================
     // SAVE EDITED COMPLAINT
     // =========================================================
 
@@ -229,38 +509,38 @@ function StudentDashboard({ onNewComplaint }) {
         setEditError("");
         setEditSuccess("");
 
-        // ---------------------------------------------
-        // VALIDATION
-        // ---------------------------------------------
+        if (!editingComplaint) {
+            return;
+        }
+
+        if (
+            String(editingComplaint.status || "").toUpperCase() !==
+            "PENDING"
+        ) {
+            setEditError(
+                "Only pending complaints can be edited."
+            );
+            return;
+        }
 
         if (!editForm.title.trim()) {
-
             setEditError(
                 "Complaint title is required."
             );
-
             return;
         }
 
         if (!editForm.description.trim()) {
-
             setEditError(
                 "Complaint description is required."
             );
-
             return;
         }
 
         if (!editForm.location.trim()) {
-
             setEditError(
                 "Complaint location is required."
             );
-
-            return;
-        }
-
-        if (!editingComplaint) {
             return;
         }
 
@@ -268,37 +548,57 @@ function StudentDashboard({ onNewComplaint }) {
 
             setEditLoading(true);
 
-            // -------------------------------------------------
-            // Your backend uses @RequestParam
-            // Therefore send these values as URL parameters.
-            // -------------------------------------------------
+            /*
+             * Multipart request:
+             *
+             * image is OPTIONAL during edit.
+             * - No retake -> backend keeps existing image.
+             * - Retake -> backend replaces existing image.
+             */
+
+            const formData = new FormData();
+
+            formData.append(
+                "title",
+                editForm.title.trim()
+            );
+
+            formData.append(
+                "description",
+                editForm.description.trim()
+            );
+
+            formData.append(
+                "location",
+                editForm.location.trim()
+            );
+
+            if (editForm.category) {
+                formData.append(
+                    "category",
+                    editForm.category
+                );
+            }
+
+            if (editForm.priority) {
+                formData.append(
+                    "priority",
+                    editForm.priority
+                );
+            }
+
+            if (editPhoto) {
+                formData.append(
+                    "image",
+                    editPhoto
+                );
+            }
 
             const response =
                 await api.put(
                     `/complaints/${editingComplaint.id}`,
-                    null,
-                    {
-                        params: {
-                            title: editForm.title.trim(),
-
-                            description:
-                                editForm.description.trim(),
-
-                            location:
-                                editForm.location.trim(),
-
-                            category:
-                                editForm.category,
-
-                            priority:
-                                editForm.priority
-                        }
-                    }
+                    formData
                 );
-
-            // -------------------------------------------------
-            // UPDATE COMPLAINT IN CURRENT LIST
-            // -------------------------------------------------
 
             setComplaints((previous) =>
                 previous.map((complaint) =>
@@ -309,27 +609,13 @@ function StudentDashboard({ onNewComplaint }) {
             );
 
             setEditSuccess(
-                "Complaint updated successfully! ✅"
+                editPhoto
+                    ? "Complaint and photo updated successfully!"
+                    : "Complaint updated successfully!"
             );
 
-            // -------------------------------------------------
-            // CLOSE EDIT FORM AFTER SHORT DELAY
-            // -------------------------------------------------
-
             setTimeout(() => {
-
-                setEditingComplaint(null);
-
-                setEditForm({
-                    title: "",
-                    description: "",
-                    location: "",
-                    category: "",
-                    priority: ""
-                });
-
-                setEditSuccess("");
-
+                handleCancelEdit();
             }, 1200);
 
         } catch (error) {
@@ -351,11 +637,14 @@ function StudentDashboard({ onNewComplaint }) {
                     typeof error.response.data ===
                     "string"
                 ) {
+
                     message =
                         error.response.data;
+
                 } else if (
                     error.response.data.message
                 ) {
+
                     message =
                         error.response.data.message;
                 }
@@ -732,46 +1021,292 @@ function StudentDashboard({ onNewComplaint }) {
                             </div>
 
 
-                            {/* EXISTING PHOTO */}
+                            {/* =================================================
+                                EXISTING PHOTO / RETAKE PHOTO
+                            ================================================= */}
 
-                            {editingComplaint.imageUrl && (
+                            <div
+                                className="edit-photo-section"
+                                style={{
+                                    marginTop: "22px",
+                                    marginBottom: "24px",
+                                    padding: "22px",
+                                    border:
+                                        "1px solid rgba(107,169,216,.25)",
+                                    borderRadius: "14px",
+                                    background:
+                                        "rgba(16,39,64,.55)"
+                                }}
+                            >
 
-                                <div
+                                <h3
                                     style={{
-                                        marginBottom: "20px"
+                                        marginTop: 0
                                     }}
                                 >
+                                    📷 Complaint Photo
+                                </h3>
 
-                                    <p>
-                                        📷 Existing Complaint Photo
-                                    </p>
+                                <p
+                                    style={{
+                                        color: "#91a8c0"
+                                    }}
+                                >
+                                    You can keep the current photo
+                                    or retake it.
+                                </p>
 
-                                    <img
-                                        src={
-                                            `http://localhost:4040${editingComplaint.imageUrl}`
-                                        }
-                                        alt="Existing complaint"
+
+                                {/* CURRENT PHOTO */}
+
+                                {!editPhotoPreview &&
+                                    editingComplaint.imageUrl && (
+
+                                    <div
                                         style={{
-                                            width: "180px",
-                                            height: "120px",
-                                            objectFit: "cover",
-                                            borderRadius: "10px"
-                                        }}
-                                    />
-
-                                    <p
-                                        style={{
-                                            fontSize: "13px",
-                                            marginTop: "8px"
+                                            marginBottom: "18px"
                                         }}
                                     >
-                                        Your existing photo will
-                                        be kept.
-                                    </p>
 
-                                </div>
+                                        <p>
+                                            Current Photo
+                                        </p>
 
-                            )}
+                                        <img
+                                            src={
+                                                `http://localhost:4040${editingComplaint.imageUrl}`
+                                            }
+                                            alt="Current complaint"
+                                            style={{
+                                                width: "220px",
+                                                height: "145px",
+                                                objectFit: "cover",
+                                                borderRadius: "10px",
+                                                border:
+                                                    "1px solid rgba(255,255,255,.15)"
+                                            }}
+                                        />
+
+                                    </div>
+
+                                )}
+
+
+                                {/* CAMERA */}
+
+                                {editCameraOpen && (
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection:
+                                                "column",
+                                            alignItems:
+                                                "center",
+                                            gap: "12px",
+                                            marginBottom:
+                                                "18px"
+                                        }}
+                                    >
+
+                                        <video
+                                            ref={editVideoRef}
+                                            autoPlay
+                                            muted
+                                            playsInline
+                                            style={{
+                                                width: "100%",
+                                                maxWidth:
+                                                    "720px",
+                                                aspectRatio:
+                                                    "16 / 9",
+                                                objectFit:
+                                                    "cover",
+                                                background:
+                                                    "#020617",
+                                                border:
+                                                    "3px solid #ffffff",
+                                                borderRadius:
+                                                    "12px"
+                                            }}
+                                        />
+
+
+                                        {!editCameraReady && (
+
+                                            <p>
+                                                Camera is starting...
+                                            </p>
+
+                                        )}
+
+
+                                        <div
+                                            style={{
+                                                display:
+                                                    "flex",
+                                                gap: "10px",
+                                                flexWrap:
+                                                    "wrap",
+                                                justifyContent:
+                                                    "center"
+                                            }}
+                                        >
+
+                                            <button
+                                                type="button"
+                                                className="primary-button"
+                                                disabled={
+                                                    !editCameraReady ||
+                                                    editLoading
+                                                }
+                                                onClick={
+                                                    captureEditPhoto
+                                                }
+                                            >
+                                                📸 Capture New Photo
+                                            </button>
+
+
+                                            <button
+                                                type="button"
+                                                className="secondary-button"
+                                                onClick={
+                                                    stopEditCamera
+                                                }
+                                                disabled={
+                                                    editLoading
+                                                }
+                                            >
+                                                Cancel Camera
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+
+                                {/* NEW PHOTO PREVIEW */}
+
+                                {editPhotoPreview && (
+
+                                    <div
+                                        style={{
+                                            display:
+                                                "flex",
+                                            flexDirection:
+                                                "column",
+                                            alignItems:
+                                                "flex-start",
+                                            gap: "10px",
+                                            marginBottom:
+                                                "18px"
+                                        }}
+                                    >
+
+                                        <p
+                                            style={{
+                                                color:
+                                                    "#4ade80",
+                                                fontWeight:
+                                                    "700"
+                                            }}
+                                        >
+                                            ✓ New photo selected
+                                        </p>
+
+
+                                        <img
+                                            src={
+                                                editPhotoPreview
+                                            }
+                                            alt="New complaint photo"
+                                            style={{
+                                                width: "220px",
+                                                height: "145px",
+                                                objectFit:
+                                                    "cover",
+                                                borderRadius:
+                                                    "10px"
+                                            }}
+                                        />
+
+
+                                        <div
+                                            style={{
+                                                display:
+                                                    "flex",
+                                                gap: "10px",
+                                                flexWrap:
+                                                    "wrap"
+                                            }}
+                                        >
+
+                                            <button
+                                                type="button"
+                                                className="primary-button"
+                                                onClick={
+                                                    retakeEditPhoto
+                                                }
+                                                disabled={
+                                                    editLoading
+                                                }
+                                            >
+                                                🔄 Retake Photo
+                                            </button>
+
+
+                                            <button
+                                                type="button"
+                                                className="secondary-button"
+                                                onClick={
+                                                    keepExistingPhoto
+                                                }
+                                                disabled={
+                                                    editLoading
+                                                }
+                                            >
+                                                Keep Existing Photo
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                )}
+
+
+                                {/* OPEN CAMERA */}
+
+                                {!editCameraOpen &&
+                                    !editPhotoPreview && (
+
+                                    <button
+                                        type="button"
+                                        className="primary-button"
+                                        onClick={
+                                            openEditCamera
+                                        }
+                                        disabled={
+                                            editLoading
+                                        }
+                                    >
+                                        📷 Retake Photo
+                                    </button>
+
+                                )}
+
+
+                                <canvas
+                                    ref={editCanvasRef}
+                                    style={{
+                                        display: "none"
+                                    }}
+                                />
+
+                            </div>
 
 
                             {/* BUTTONS */}

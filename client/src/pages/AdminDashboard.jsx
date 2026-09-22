@@ -270,57 +270,6 @@ function AdminDashboard() {
 
 
     // ==========================================
-    // UPDATE STATUS
-    // ==========================================
-
-    const updateStatus = async (
-        complaintId,
-        status
-    ) => {
-
-        try {
-
-            const response =
-                await api.put(
-                    `/admin/complaints/${complaintId}/status?status=${status}`
-                );
-
-
-            setComplaints(
-                previous =>
-                    previous.map(
-                        complaint =>
-                            complaint.id ===
-                            complaintId
-
-                                ? response.data
-
-                                : complaint
-                    )
-            );
-
-
-            setMessage(
-                "Complaint status updated."
-            );
-
-        } catch (error) {
-
-            console.error(error);
-
-            const serverMessage =
-                error.response?.data;
-
-            setMessage(
-                typeof serverMessage === "string"
-                    ? serverMessage
-                    : "Failed to update complaint status."
-            );
-        }
-    };
-
-
-    // ==========================================
     // LOGOUT
     // ==========================================
 
@@ -996,7 +945,7 @@ function AdminDashboard() {
 
 
                             <p>
-                                Manage and assign campus complaints.
+                                View complaints, monitor progress and assign technicians.
                             </p>
 
                         </div>
@@ -1272,37 +1221,6 @@ function AdminDashboard() {
                                                         </select>
                                                     </div>
 
-                                                    {/* UPDATE STATUS */}
-                                                    <div>
-
-                                                        <label>
-                                                            Update Status
-                                                        </label>
-
-                                                        <select
-                                                            value={
-                                                                complaint.status || "PENDING"
-                                                            }
-                                                            onChange={e =>
-                                                                updateStatus(
-                                                                    complaint.id,
-                                                                    e.target.value
-                                                                )
-                                                            }
-                                                        >
-                                                            <option value="PENDING">
-                                                                Pending
-                                                            </option>
-
-                                                            <option value="IN_PROGRESS">
-                                                                In Progress
-                                                            </option>
-
-                                                            <option value="RESOLVED">
-                                                                Resolved
-                                                            </option>
-                                                        </select>
-                                                    </div>
 
                                                 </div>
                                             )}

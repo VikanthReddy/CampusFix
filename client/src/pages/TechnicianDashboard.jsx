@@ -136,6 +136,36 @@ function TechnicianDashboard() {
             return;
         }
 
+        const complaint = complaints.find(
+            item => item.id === complaintId
+        );
+
+        if (!complaint) {
+            setMessage("Complaint not found.");
+            return;
+        }
+
+        const currentStatus =
+            (complaint.status || "PENDING").toUpperCase();
+        const nextStatus = (status || "").toUpperCase();
+
+        if (currentStatus === "RESOLVED") {
+            setMessage("Resolved complaints cannot be changed.");
+            return;
+        }
+
+        if (currentStatus === "PENDING" &&
+            !["IN_PROGRESS", "RESOLVED"].includes(nextStatus)) {
+            setMessage("A pending complaint can only move to In Progress or Resolved.");
+            return;
+        }
+
+        if (currentStatus === "IN_PROGRESS" &&
+            !["RESOLVED"].includes(nextStatus)) {
+            setMessage("An in-progress complaint can only move to Resolved.");
+            return;
+        }
+
         try {
 
             const response =
@@ -840,17 +870,20 @@ function TechnicianDashboard() {
                                                                 )
                                                             }
                                                         >
-                                                            <option value="PENDING">
-                                                                Pending
-                                                            </option>
+                                                            {complaint.status?.toUpperCase() === "PENDING" && (
+                                                                <>
+                                                                    <option value="PENDING">Pending</option>
+                                                                    <option value="IN_PROGRESS">In Progress</option>
+                                                                    <option value="RESOLVED">Resolved</option>
+                                                                </>
+                                                            )}
 
-                                                            <option value="IN_PROGRESS">
-                                                                In Progress
-                                                            </option>
-
-                                                            <option value="RESOLVED">
-                                                                Resolved
-                                                            </option>
+                                                            {complaint.status?.toUpperCase() === "IN_PROGRESS" && (
+                                                                <>
+                                                                    <option value="IN_PROGRESS">In Progress</option>
+                                                                    <option value="RESOLVED">Resolved</option>
+                                                                </>
+                                                            )}
                                                         </select>
                                                     </div>
 

@@ -358,21 +358,6 @@ public class ComplaintController {
     }
 
     // =========================================================
-    // UPDATE COMPLAINT STATUS
-    // =========================================================
-
-    // Keep your existing status endpoint here if you already
-    // have one used by Admin/Technician.
-    //
-    // Do NOT make this student-editable.
-    //
-    // Example:
-    //
-    // @PutMapping("/{id}/status")
-    // @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
-    // public ResponseEntity<?> updateStatus(...) { ... }
-
-    // =========================================================
     // DELETE COMPLAINT
     // ADMIN ONLY
     // =========================================================

@@ -8,9 +8,16 @@ function AnalyticsDashboard() {
 
     useEffect(() => {
         loadAnalytics();
+
+        // Keep Admin analytics synchronized with technician status updates.
+        const interval = setInterval(() => {
+            loadAnalytics(true);
+        }, 10000);
+
+        return () => clearInterval(interval);
     }, []);
 
-    const loadAnalytics = async () => {
+    const loadAnalytics = async (silent = false) => {
         try {
             const response = await api.get("/analytics/summary");
 
@@ -20,7 +27,9 @@ function AnalyticsDashboard() {
 
             setError("Unable to load analytics.");
         } finally {
-            setLoading(false);
+            if (!silent) {
+                setLoading(false);
+            }
         }
     };
 
@@ -184,6 +193,14 @@ function AnalyticsDashboard() {
                     <strong>
                         {total}
                     </strong>
+
+                    <button
+                        type="button"
+                        className="analytics-refresh-button"
+                        onClick={() => loadAnalytics(false)}
+                    >
+                        Refresh
+                    </button>
 
                 </div>
 
