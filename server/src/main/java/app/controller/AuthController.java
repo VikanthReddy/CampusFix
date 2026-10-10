@@ -116,4 +116,32 @@ public class AuthController {
                     .body(e.getMessage());
         }
     }
+
+    // =====================================================
+    // FORGOT PASSWORD
+    // =====================================================
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody java.util.Map<String, String> request) {
+        try {
+            authService.forgotPassword(request.get("email"));
+            return ResponseEntity.ok(java.util.Map.of("message", "OTP sent successfully."));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // =====================================================
+    // RESET PASSWORD
+    // =====================================================
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody java.util.Map<String, String> request) {
+        try {
+            authService.resetPassword(request.get("email"), request.get("otp"), request.get("newPassword"));
+            return ResponseEntity.ok(java.util.Map.of("message", "Password reset successfully."));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

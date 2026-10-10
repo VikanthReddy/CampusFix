@@ -40,6 +40,11 @@ public class Complaint {
     @JoinColumn(name = "technician_id")
     private Technician technician;
 
+    private Integer rating;
+
+    @Column(columnDefinition = "TEXT")
+    private String feedback;
+
     public Complaint() {
     }
 
@@ -149,5 +154,21 @@ public class Complaint {
 
     public void setTechnician(Technician technician) {
         this.technician = technician;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 }

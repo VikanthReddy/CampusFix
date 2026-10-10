@@ -8,8 +8,8 @@ html {
 
 .landing-page {
     min-height: 100vh;
-    background: #f8fafc;
-    color: #0f172a;
+    background: #eff7f4;
+    color: #060000;
     overflow-x: hidden;
 }
 
@@ -48,7 +48,7 @@ html {
 }
 
 .landing-logo > span > span {
-    color: #6366f1;
+    color: #072f67;
 }
 
 .logo-icon {
@@ -63,8 +63,8 @@ html {
 
     background: linear-gradient(
         135deg,
-        #6366f1,
-        #8b5cf6
+        #072f67,
+        #cd3745
     );
 
     color: white;
@@ -98,7 +98,7 @@ html {
 }
 
 .landing-nav-links button:hover {
-    color: #6366f1;
+    color: #072f67;
 }
 
 .landing-nav-actions {
@@ -137,7 +137,7 @@ html {
 }
 
 .landing-signup-btn:hover {
-    background: #6366f1;
+    background: #072f67;
     transform: translateY(-2px);
 }
 
@@ -189,7 +189,7 @@ html {
             rgba(139, 92, 246, 0.09),
             transparent 30%
         ),
-        #f8fafc;
+        #eff7f4;
 }
 
 .hero-content {
@@ -221,11 +221,11 @@ html {
 
     padding: 8px 14px;
 
-    border: 1px solid #ddd6fe;
+    border: 1px solid #fad7d6;
     border-radius: 50px;
 
-    background: #f5f3ff;
-    color: #6366f1;
+    background: #eff7f4;
+    color: #072f67;
 
     font-size: 11px;
     font-weight: 900;
@@ -278,7 +278,7 @@ html {
 
     font-weight: 950;
 
-    color: #0f172a;
+    color: #060000;
 }
 
 .hero-content h1 span {
@@ -287,9 +287,9 @@ html {
     background:
         linear-gradient(
             90deg,
-            #6366f1,
-            #8b5cf6,
-            #a855f7
+            #072f67,
+            #cd3745,
+            #fad7d6
         );
 
     -webkit-background-clip: text;
@@ -360,7 +360,7 @@ html {
 }
 
 .primary-hero-btn:hover {
-    background: #6366f1;
+    background: #072f67;
     transform: translateY(-3px);
 
     box-shadow:
@@ -380,8 +380,8 @@ html {
 }
 
 .secondary-hero-btn:hover {
-    border-color: #a5b4fc;
-    color: #6366f1;
+    border-color: #fad7d6;
+    color: #072f67;
     transform: translateY(-2px);
 }
 
@@ -562,7 +562,7 @@ html {
 
     border-radius: 12px;
 
-    background: #f8fafc;
+    background: #eff7f4;
 }
 
 .mini-stat-icon {
@@ -670,7 +670,7 @@ html {
     background:
         linear-gradient(
             to top,
-            #6366f1,
+            #072f67,
             #a78bfa
         );
 
@@ -717,7 +717,7 @@ html {
 }
 
 .recent-heading span {
-    color: #6366f1;
+    color: #072f67;
 }
 
 .complaint-row {
@@ -760,8 +760,8 @@ html {
 }
 
 .complaint-avatar.network {
-    background: #ede9fe;
-    color: #7c3aed;
+    background: #eff7f4;
+    color: #072f67;
 }
 
 .complaint-info {
@@ -929,8 +929,8 @@ html {
 
     border-radius: 8px;
 
-    background: #ede9fe;
-    color: #7c3aed;
+    background: #eff7f4;
+    color: #072f67;
 
     font-size: 8px;
     font-weight: 900;
@@ -953,7 +953,7 @@ html {
 }
 
 .how-section {
-    background: #f8fafc;
+    background: #eff7f4;
 }
 
 .status-section {
@@ -969,7 +969,7 @@ html {
 }
 
 .section-heading > span {
-    color: #6366f1;
+    color: #072f67;
 
     font-size: 10px;
     font-weight: 900;
@@ -980,7 +980,7 @@ html {
 .section-heading h2 {
     margin: 12px 0;
 
-    color: #0f172a;
+    color: #060000;
 
     font-size: 38px;
     line-height: 1.15;
@@ -1076,7 +1076,7 @@ html {
 .feature-card:hover {
     transform: translateY(-8px);
 
-    border-color: #c7d2fe;
+    border-color: #fad7d6;
 
     box-shadow:
         0 22px 45px
@@ -1088,7 +1088,7 @@ html {
 }
 
 .featured-card {
-    border-color: #c7d2fe;
+    border-color: #fad7d6;
 
     background:
         linear-gradient(
@@ -1117,7 +1117,7 @@ html {
 }
 
 .feature-icon.purple {
-    background: #ede9fe;
+    background: #eff7f4;
 }
 
 .feature-icon.blue {
@@ -1182,7 +1182,7 @@ html {
 
     margin-top: 20px;
 
-    color: #6366f1;
+    color: #072f67;
 
     font-size: 10px;
     font-weight: 900;
@@ -1239,7 +1239,7 @@ html {
 }
 
 .workflow-tab:hover {
-    border-color: #c7d2fe;
+    border-color: #fad7d6;
 }
 
 .workflow-tab > span {
@@ -1264,7 +1264,7 @@ html {
 }
 
 .workflow-tab.active {
-    border-color: #6366f1;
+    border-color: #072f67;
 
     background: #eef2ff;
 
@@ -1274,7 +1274,7 @@ html {
 }
 
 .workflow-tab.active > span {
-    color: #6366f1;
+    color: #072f67;
 }
 
 .workflow-content {
@@ -1338,7 +1338,7 @@ html {
 }
 
 .workflow-text > span {
-    color: #a5b4fc;
+    color: #fad7d6;
 
     font-size: 9px;
     font-weight: 900;
@@ -1409,7 +1409,7 @@ html {
 
     border-radius: 20px;
 
-    background: #f8fafc;
+    background: #eff7f4;
 
     box-shadow:
         0 20px 50px
@@ -1459,7 +1459,7 @@ html {
 }
 
 .status-button:hover {
-    border-color: #c7d2fe;
+    border-color: #fad7d6;
 }
 
 .status-button.active {
@@ -1527,8 +1527,8 @@ html {
 }
 
 .status-big-icon.progress {
-    background: #ede9fe;
-    color: #7c3aed;
+    background: #eff7f4;
+    color: #072f67;
 }
 
 .status-big-icon.resolved {
@@ -1625,15 +1625,15 @@ html {
 }
 
 .progress-step.completed .progress-dot {
-    border-color: #6366f1;
+    border-color: #072f67;
 
-    background: #6366f1;
+    background: #072f67;
 
     color: white;
 }
 
 .progress-step.completed span {
-    color: #6366f1;
+    color: #072f67;
 }
 
 
@@ -1675,7 +1675,7 @@ html {
 }
 
 .cta-content > span {
-    color: #a5b4fc;
+    color: #fad7d6;
 
     font-size: 9px;
     font-weight: 900;
@@ -1693,7 +1693,7 @@ html {
 }
 
 .cta-content h2 em {
-    color: #a5b4fc;
+    color: #fad7d6;
     font-style: normal;
 }
 
@@ -1740,7 +1740,7 @@ html {
 }
 
 .cta-action button:hover {
-    background: #c7d2fe;
+    background: #fad7d6;
 
     transform: translateY(-3px);
 }
@@ -2201,3 +2201,4 @@ html {
     }
 
 }
+

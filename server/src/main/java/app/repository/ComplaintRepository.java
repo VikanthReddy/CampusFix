@@ -21,4 +21,6 @@ public interface ComplaintRepository
     long countByStatus(String status);
 
     long countByCategory(String category);
+
+    boolean existsByCategoryAndLocationAndStatusIn(String category, String location, List<String> statuses);
 }

@@ -27,9 +27,8 @@ body {
         Arial,
         sans-serif;
 
-    background: #f5f7fb;
-
-    color: #1f2937;
+    background: var(--page, #f8fafc);
+    color: var(--text, #0f172a);
 
     min-height: 100vh;
 }

@@ -701,4 +701,56 @@ public class AuthService {
 
         return admin;
     }
+
+    // ==========================================
+    // FORGOT PASSWORD
+    // ==========================================
+    @Transactional
+    public void forgotPassword(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new RuntimeException("Email is required.");
+        }
+        User user = userRepository.findByEmail(email.trim().toLowerCase())
+                .orElseThrow(() -> new RuntimeException("User with this email not found."));
+
+        // Generate a 6-digit OTP
+        String otp = String.format("%06d", new java.util.Random().nextInt(999999));
+        user.setResetToken(otp);
+        user.setResetTokenExpiry(java.time.LocalDateTime.now().plusMinutes(15));
+        userRepository.save(user);
+
+        emailService.sendEmail(
+                user.getEmail(),
+                "CampusFix - Password Reset OTP",
+                "Hello " + user.getName() + ",\n\n"
+                        + "Your OTP for password reset is: " + otp + "\n\n"
+                        + "It is valid for 15 minutes.\n\n"
+                        + "CampusFix Support Team"
+        );
+    }
+
+    // ==========================================
+    // RESET PASSWORD
+    // ==========================================
+    @Transactional
+    public void resetPassword(String email, String otp, String newPassword) {
+        if (email == null || otp == null || newPassword == null) {
+            throw new RuntimeException("Email, OTP and new password are required.");
+        }
+        User user = userRepository.findByEmail(email.trim().toLowerCase())
+                .orElseThrow(() -> new RuntimeException("User with this email not found."));
+
+        if (user.getResetToken() == null || !user.getResetToken().equals(otp)) {
+            throw new RuntimeException("Invalid OTP.");
+        }
+
+        if (user.getResetTokenExpiry() == null || user.getResetTokenExpiry().isBefore(java.time.LocalDateTime.now())) {
+            throw new RuntimeException("OTP has expired.");
+        }
+
+        user.setPassword(passwordHash.encode(newPassword));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+        userRepository.save(user);
+    }
 }

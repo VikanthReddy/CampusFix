@@ -393,6 +393,37 @@ public class ComplaintController {
     }
 
     // =========================================================
+    // SUBMIT FEEDBACK
+    // STUDENT ONLY
+    // =========================================================
+
+    @PostMapping("/{id}/feedback")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> submitFeedback(
+            @PathVariable Long id,
+            @RequestBody java.util.Map<String, Object> payload,
+            Authentication authentication) {
+        try {
+            User user = getAuthenticatedUser(authentication);
+            Integer rating = null;
+            if (payload.get("rating") != null) {
+                rating = Integer.valueOf(payload.get("rating").toString());
+            }
+            String feedback = null;
+            if (payload.get("feedback") != null) {
+                feedback = payload.get("feedback").toString();
+            }
+
+            Complaint complaint = complaintService.submitFeedback(id, user.getId(), rating, feedback);
+            return ResponseEntity.ok(complaint);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Unable to submit feedback: " + e.getMessage());
+        }
+    }
+
+    // =========================================================
     // GET AUTHENTICATED USER
     // =========================================================
 

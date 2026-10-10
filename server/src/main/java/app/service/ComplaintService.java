@@ -7,11 +7,13 @@ import app.model.User;
 import app.repository.ComplaintRepository;
 import app.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class ComplaintService {
 
     private final ComplaintRepository complaintRepository;
@@ -179,6 +181,20 @@ public class ComplaintService {
         complaint.setPriority(
                 priority.trim().toUpperCase()
         );
+
+        // -----------------------------------------------------
+        // DUPLICATE CHECK
+        // -----------------------------------------------------
+
+        boolean isDuplicate = complaintRepository.existsByCategoryAndLocationAndStatusIn(
+                complaint.getCategory(), 
+                complaint.getLocation(), 
+                java.util.Arrays.asList("PENDING", "ASSIGNED", "IN_PROGRESS")
+        );
+
+        if (isDuplicate) {
+            throw new RuntimeException("A similar complaint in this category at this location is already being processed.");
+        }
 
         // -----------------------------------------------------
         // IMAGE
@@ -700,5 +716,28 @@ public class ComplaintService {
         }
 
         complaintRepository.deleteById(id);
+    }
+
+    // ==========================================
+    // SUBMIT FEEDBACK
+    // ==========================================
+
+    @Transactional
+    public Complaint submitFeedback(Long complaintId, Long userId, Integer rating, String feedback) {
+        Complaint complaint = complaintRepository.findById(complaintId)
+                .orElseThrow(() -> new RuntimeException("Complaint not found"));
+
+        if (!complaint.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You are not allowed to submit feedback for this complaint.");
+        }
+
+        if (!"RESOLVED".equalsIgnoreCase(complaint.getStatus())) {
+            throw new RuntimeException("Feedback can only be submitted for resolved complaints.");
+        }
+
+        complaint.setRating(rating);
+        complaint.setFeedback(feedback);
+
+        return complaintRepository.save(complaint);
     }
 }

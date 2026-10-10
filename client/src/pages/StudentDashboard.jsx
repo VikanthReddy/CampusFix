@@ -9,6 +9,29 @@ function StudentDashboard({ onNewComplaint }) {
     const [loading, setLoading] = useState(true);
 
     // =========================================================
+    // FEEDBACK STATE
+    // =========================================================
+    const [feedbackForm, setFeedbackForm] = useState({ rating: 5, feedback: "" });
+    const [feedbackComplaintId, setFeedbackComplaintId] = useState(null);
+    const [feedbackLoading, setFeedbackLoading] = useState(false);
+
+    const handleFeedbackSubmit = async (e, complaintId) => {
+        e.preventDefault();
+        setFeedbackLoading(true);
+        try {
+            const res = await api.post(`/complaints/${complaintId}/feedback`, feedbackForm);
+            setComplaints(complaints.map(c => c.id === complaintId ? res.data : c));
+            setFeedbackComplaintId(null);
+            setFeedbackForm({ rating: 5, feedback: "" });
+        } catch (err) {
+            alert(err.response?.data || "Failed to submit feedback");
+        } finally {
+            setFeedbackLoading(false);
+        }
+    };
+
+
+    // =========================================================
     // EDIT COMPLAINT STATE
     // =========================================================
 
@@ -1807,6 +1830,37 @@ function StudentDashboard({ onNewComplaint }) {
 
                                                 )}
 
+                                        {/* =================================================
+                                            FEEDBACK SECTION
+                                        ================================================= */}
+                                        {complaint.status === 'RESOLVED' && (
+                                            <div style={{marginTop: '15px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid #ddd'}}>
+                                                {complaint.rating ? (
+                                                    <div>
+                                                        <strong style={{color: '#ffc107', fontSize: '1.2em'}}>? {complaint.rating} / 5</strong>
+                                                        <p style={{margin: '5px 0 0 0', fontStyle: 'italic'}}>{complaint.feedback}</p>
+                                                    </div>
+                                                ) : (
+                                                    feedbackComplaintId === complaint.id ? (
+                                                        <form onSubmit={(e) => handleFeedbackSubmit(e, complaint.id)}>
+                                                            <div style={{marginBottom: '10px'}}>
+                                                                <label style={{fontWeight: 'bold', marginRight: '10px'}}>Rating (1-5):</label>
+                                                                <input type="number" min="1" max="5" value={feedbackForm.rating} onChange={(e) => setFeedbackForm({...feedbackForm, rating: e.target.value})} style={{width: '60px', padding: '5px', borderRadius: '4px', border: '1px solid #ccc'}} required/>
+                                                            </div>
+                                                            <textarea placeholder="Write your feedback..." value={feedbackForm.feedback} onChange={(e) => setFeedbackForm({...feedbackForm, feedback: e.target.value})} style={{width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc', minHeight: '60px'}} required></textarea>
+                                                            <div style={{marginTop: '10px'}}>
+                                                                <button type="submit" disabled={feedbackLoading} style={{background: '#28a745', color: '#fff', border: 'none', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer', marginRight: '10px'}}>Submit Feedback</button>
+                                                                <button type="button" onClick={() => setFeedbackComplaintId(null)} style={{background: '#6c757d', color: '#fff', border: 'none', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer'}}>Cancel</button>
+                                                            </div>
+                                                        </form>
+                                                    ) : (
+                                                        <button onClick={() => setFeedbackComplaintId(complaint.id)} style={{background: '#007bff', color: '#fff', border: 'none', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer'}}>
+                                                            Provide Feedback
+                                                        </button>
+                                                    )
+                                                )}
+                                            </div>
+                                        )}
                                         </div>
 
 
