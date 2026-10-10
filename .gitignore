@@ -91,3 +91,7 @@ application.properties
 .env
 .env.*
 !.env.example
+
+# Database backups
+campusfix_backup.sql
+*.sql
