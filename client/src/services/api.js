@@ -4,13 +4,9 @@ const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 
 export const API_BASE_URL =
     configuredBaseUrl ||
-    (import.meta.env.DEV ? "http://localhost:4040/api" : "");
-
-if (!API_BASE_URL) {
-    throw new Error(
-        "VITE_API_BASE_URL must be configured for production builds."
-    );
-}
+    (import.meta.env.DEV
+        ? "http://localhost:4040/api"
+        : "https://campusfix-backend-vsy8.onrender.com/api");
 
 export const API_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, "");
 
