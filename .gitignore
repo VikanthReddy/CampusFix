@@ -86,6 +86,7 @@ desktop.ini
 uploads/
 # Local application configuration
 application.properties
+!server/src/main/resources/application.properties
 
 # Environment files
 .env

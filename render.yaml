@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: campusfix-backend
+    runtime: docker
+    dockerfilePath: ./server/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: APP_JWT_SECRET
+        generateValue: true
+      - key: APP_EMAIL_ENABLED
+        value: "false"
+      - key: SPRING_MAIL_USERNAME
+        sync: false
+      - key: SPRING_MAIL_PASSWORD
+        sync: false
+      - key: UPLOAD_DIR
+        value: /tmp/uploads/complaints
