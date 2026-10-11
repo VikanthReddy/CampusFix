@@ -14,7 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/technicians")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://campus-fix-smoky.vercel.app"
+})
 public class TechnicianController {
 
     private final TechnicianService technicianService;

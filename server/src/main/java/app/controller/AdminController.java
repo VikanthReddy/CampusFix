@@ -13,7 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://campus-fix-smoky.vercel.app"
+})
 public class AdminController {
 
     private final AdminService adminService;

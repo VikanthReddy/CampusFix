@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import api from "../services/api";
+import api, { getApiResourceUrl } from "../services/api";
 import NotificationBell from "../components/NotificationBell";
 
 function StudentDashboard({ onNewComplaint }) {
@@ -1097,7 +1097,7 @@ function StudentDashboard({ onNewComplaint }) {
 
                                         <img
                                             src={
-                                                `http://localhost:4040${editingComplaint.imageUrl}`
+                                                getApiResourceUrl(editingComplaint.imageUrl)
                                             }
                                             alt="Current complaint"
                                             style={{
@@ -1615,7 +1615,7 @@ function StudentDashboard({ onNewComplaint }) {
 
                                                 <img
                                                     src={
-                                                        `http://localhost:4040${complaint.imageUrl}`
+                                                        getApiResourceUrl(complaint.imageUrl)
                                                     }
                                                     alt="Complaint"
                                                     className="complaint-image"

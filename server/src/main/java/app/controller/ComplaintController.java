@@ -16,7 +16,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/complaints")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://campus-fix-smoky.vercel.app"
+})
 public class ComplaintController {
 
     private final ComplaintService complaintService;

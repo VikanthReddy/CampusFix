@@ -8,7 +8,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/analytics")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://campus-fix-smoky.vercel.app"
+})
 @PreAuthorize("hasRole('ADMIN')")
 public class AnalyticsController {
 

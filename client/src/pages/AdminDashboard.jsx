@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import api, { getApiResourceUrl } from "../services/api";
 import AnalyticsDashboard from "./AnalyticsDashboard";
 import NotificationBell from "../components/NotificationBell";
 
@@ -1009,7 +1009,7 @@ function AdminDashboard() {
 
                                                 <img
                                                     src={
-                                                        `http://localhost:4040${complaint.imageUrl}`
+                                                        getApiResourceUrl(complaint.imageUrl)
                                                     }
                                                     alt="Complaint"
                                                 />
